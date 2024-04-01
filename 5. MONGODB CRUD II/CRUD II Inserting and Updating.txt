@@ -1,0 +1,139 @@
+# CRUD II: INSERTING AND UPDATING
+---------------------------------
+
+* The _id Field
+---------------
+5 min
+By this point, we’ve learned the fundamentals of querying data in MongoDB. In this lesson, we’ll learn how to insert new documents, and update existing ones.
+
+As you continue to work with documents in MongoDB, you may notice one field that exists across every document: the _id field. It might look similar to this:
+
+_id: ObjectId("5eb3d668b31de5d588f4305b")
+
+The _id field plays a vital role in every document inside of a MongoDB collection, and it has a few distinct characteristics:
+
+	. The _id field is required for every document in a collection and must be unique.
+
+	. MongoDB automatically generates an ObjectId for the _id field if no value is provided.
+
+	. Developers can specify the _id with something other than an ObjectId such as a number or random string, if desired.
+
+	. The _id field is immutable, and once a document has an assigned _id, it cannot be updated or changed.
+
+The ObjectId is a 12-byte data type that is commonly used for the _id field. When generated automatically, each ObjectId contains an embedded timestamp which is generally unique. This 
+allows documents to be inserted in order of creation time (or very close to it) and for users to roughly sort their results by creation time if necessary. While we won’t explicitly need 
+the _id field to update or create new documents, it’s important to note that this is how MongoDB identifies each unique document that is inserted or updated in a collection.
+
+Let’s return to our restaurants collection to look at the _id fields that currently exist in our documents.
+
+* Instructions
+--------------
+Checkpoint 1 Passed
+1.
+Connect to the restaurants database, then using the listingsAndReviews collection, query for all the documents in the collection using the .find() method. Take a moment to observe the _id 
+field in each document.
+
+
+Hint
+Be sure to connect to run the command use restaurants to connect to the restaurants database first. To query for all the documents in a collection, you can use the .find() method with the 
+following syntax:
+
+db.<collection>.find()
+
+Need another hint?
+Once you put it together, your query should look like this:
+
+mongo.sh
+--------
+test> use restaurants
+switched to db restaurants
+restaurants> db.listingsAndReviews.find()
+
+[
+  {
+    _id: ObjectId("5eb3d668b31de5d588f43081"),
+    address: {
+      building: '543',
+      coord: [ -73.9922175, 40.7543506 ],
+      street: '8 Avenue',
+      zipcode: '10018'
+    },
+    borough: 'Manhattan',
+    cuisine: 'American',
+    grades: [
+      {
+        date: ISODate("2014-12-29T00:00:00.000Z"),
+        grade: 'A',
+        score: 7
+      },
+      {
+        date: ISODate("2014-06-26T00:00:00.000Z"),
+        grade: 'A',
+        score: 12
+      },
+      {
+        date: ISODate("2013-06-03T00:00:00.000Z"),
+        grade: 'A',
+        score: 13
+      },
+      {
+        date: ISODate("2012-05-29T00:00:00.000Z"),
+        grade: 'A',
+        score: 2
+      },
+      {
+        date: ISODate("2012-01-26T00:00:00.000Z"),
+        grade: 'A',
+        score: 10
+      }
+    ],
+    name: 'Wakamba',
+    restaurant_id: '40564625'
+  },
+
+  ...
+
+
+
+------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
