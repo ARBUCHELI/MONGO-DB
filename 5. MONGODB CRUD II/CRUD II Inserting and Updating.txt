@@ -43,8 +43,8 @@ db.<collection>.find()
 Need another hint?
 Once you put it together, your query should look like this:
 
-mongo.sh
---------
+mongosh
+-------
 test> use restaurants
 switched to db restaurants
 restaurants> db.listingsAndReviews.find()
@@ -259,6 +259,183 @@ restaurants> db.listingsAndReviews.findOne({restaurant_id: "40564243"});
 }
 
 ------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+* Inserting Multiple Documents
+------------------------------
+12 min
+We have just used .insertOne() to insert a single document into a collection, but what if we want to insert multiple documents into a collection? Here’s where the MongoDB .insertMany() 
+method comes in.
+
+As its name suggests, .insertMany() will insert multiple documents into a collection. Much like .insertOne(), if the collection we’ve specified does not exist, one will be created.
+
+The syntax for the method is as follows:
+
+db.<collection>.insertMany(
+  [<document1>, <document2>, ...],
+  {
+    writeConcern: <document>,
+    ordered: <boolean>
+  }
+);
+
+This method has three parameters:
+
+	1. An array of documents; the documents we want to add to the collection.
+
+	2. A parameter named writeConcern.
+
+	3. A parameter named ordered.
+
+The ordered parameter can be handy since it allows us to specify if MongoDB should perform an ordered or unordered insert. If set to false, documents are inserted in an unordered format. 
+If set to true, the default behavior, MongoDB will insert the documents in the order given in the array.
+
+It’s worth noting that with ordered inserts, if a single document fails to be inserted, the entire insert operation will cease, and any remaining documents will not be inserted. On the 
+other hand, unordered inserts will continue in the case of an insert failure and attempt to insert any remaining documents.
+
+Let’s look at an example of .insertMany() on a collection named students:
+
+db.students.insertMany([
+  {
+    name: "Mia Ramirez",
+    age: 15
+  },
+  {
+    name: "Kiv Huang",
+    age: 17
+  },
+  {
+    name: "Sam Soto",
+    age: 16
+  }
+], { ordered: true })
+
+The command above will insert the documents in the order specified. Below you will find the output of the command with an additional note that indicates which _id represents which 
+document.
+
+{
+  acknowledged: true,
+  insertedIds: {
+    '0': ObjectId("63054a5376742c0e5a0cfafb"), // Mia
+    '1': ObjectId("63054a5376742c0e5a0cfafc"), // Kiv
+    '2': ObjectId("63054a5376742c0e5a0cfafd") // Sam
+  }
+}
+
+Let’s practice adding multiple new restaurants to our listingsAndReviews collection!
+
+* Instructions
+--------------
+Checkpoint 1 Passed
+1.
+Connect to the restaurants database. Insert two new documents in an ordered fashion into the listingsAndReviews collection. The documents should have the following properties, 
+respectively:
+
+// 1st document
+  name: "Boucherie",
+  borough: "Manhattan",
+  cuisine: "American",
+  restaurant_id: "49246215"
+
+// 2nd document
+  name: "Carmines",
+  borough: "Manhattan",
+  cuisine: "Italian",
+  restaurant_id: "48259401"
+
+
+Hint
+Remember to include each document in an array, and pass that array into the .insertMany() method as the first argument. Use the following syntax for the insertMany() method:
+
+db.<collection>.insertMany(
+  [<document1>, <document2>, ...],
+  {
+    ordered: <boolean>
+  }
+);
+
+Need another hint?
+You can call the .insertMany() method on the listingsAndReviews collection to insert multiple documents into this collection. As an argument, pass in an array of documents with the fields 
+and values provided to you.
+
+Once you put it together, your query should look like this:
+
+db.listingsAndReviews.insertMany([
+  {
+    name: "Boucherie", 
+    borough: "Manhattan", 
+    cuisine: "American", 
+   restaurant_id: "49246215"
+  }, 
+  {
+    name: "Carmines", 
+    borough: "Manhattan", 
+    cuisine: "Italian", 
+    restaurant_id: "48259401"
+  }
+])
+
+Checkpoint 2 Passed
+2.
+Using .findOne() method, query for one of the documents that you just inserted using the name field.
+
+
+Hint
+To query a collection for a single document using the findOne() method, you can use the following syntax:
+
+db.<collection>.findOne({ <field>: <value> })
+
+Need another hint?
+Be sure to pass in a query document that specifies name as the field, and "Boucherie" or "Carmines" as the value.
+
+Once you put it together, your query should look as follows:
+
+mongosh
+-------
+test> use restaurants
+switched to db restaurants
+restaurants> db.listingsAndReviews.insertMany([{name: "Boucherie", borough: "Manhattan", cuisine: "American", restaurant_id: "49246215"},{name: "Carmines", borough: "Manhattan", cuisine: "Italian", restaurant_id: "48259401"}]);
+{
+  acknowledged: true,
+  insertedIds: {
+    '0': ObjectId("660a8ea1e81fd8de3e942ca6"),
+    '1': ObjectId("660a8ea1e81fd8de3e942ca7")
+  }
+}
+restaurants> db.listingsAndReviews.findOne({name: "Boucherie"});
+{
+  _id: ObjectId("660a8ea1e81fd8de3e942ca6"),
+  name: 'Boucherie',
+  borough: 'Manhattan',
+  cuisine: 'American',
+  restaurant_id: '49246215'
+}
+
+------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
