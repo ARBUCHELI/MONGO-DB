@@ -412,6 +412,182 @@ restaurants> db.listingsAndReviews.findOne({name: "Boucherie"});
 
 ------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
+Updating a Single Document
+13 min
+Now that we have explored a few Create operations, let’s look at operations that Update data.
+
+In MongoDB, we can use the .updateOne() method to update a single document. The method finds the first document that matches specific filter criteria and applies specified update modifications. Note that it updates the first matching document, even if multiple documents match the criteria.
+
+Let’s take a look at the syntax for the .updateOne() method:
+
+db.<collection>.updateOne(<filter>, <update>, <options>)
+
+The method has three parameters:
+
+filter: A document that provides selection criteria for the document to update.
+update: A document that specifies any modifications to be applied. This parameter gives us quite a bit of flexibility, allowing us to modify existing fields, insert new ones, or even replace an entire document.
+options: A document that includes any additional specifications for our update operation such as upsert and writeConcern.
+To explore the importance of each of these parameters and how the updateOne() method works, consider a third-party retail store for used smartphones. The store keeps all their information in a collection called products, where each document holds information regarding a specific type of smartphone:
+
+{ 
+  _id: ObjectId("507f1fg7bcf865d799439h11"), 
+  title: "iPhoneX", 
+  price: 1000,
+  stock: 25 
+},
+{ 
+  _id: ObjectId("507f1fg7bcf865d799439h12"), 
+  title: "iPhone7", 
+  price: 600,
+  stock: 25 
+},
+{ 
+  _id: ObjectId("507f1fg7bcf865d799439h13"), 
+  title: "iPhone6", 
+  price: 500,
+  stock: 25 
+}
+
+To start an update operation, we must first choose our filter. This is similar to when we used find() to retrieve a document based on specific criteria. So, for example, if we wanted to update only the document with the title "IPhoneX", we could specify the title as the filter:
+
+db.products.updateOne({ title: "iPhoneX" }, <update>, <options> });
+
+Now that we have a document we can target for the update, we can move onto the update parameter.
+
+To update a document in MongoDB, we have to specify what fields we want to update and how we want to update them. This is where the update parameter comes into play. To specify how we want to update a document, we can use MongoDB update operators. MongoDB offers us several update operators that can perform a variety of modifications to document fields. In this exercise, we’ll focus on the $set update operator. This operator allows us to replace a field’s value with one that we provide.
+
+To see this in action, imagine a new phone model is launching soon, and the price of the "iPhoneX" will need to be decreased in order to remain competitive. We want to update the price from 1000 to 679. We can accomplish this by running the following command:
+
+db.products.updateOne({ title: "iPhoneX" }, { $set: { price: 679 } });
+
+If successful, the operation should return:
+
+{ "acknowledged" : true, "matchedCount" : 1, "modifiedCount" : 1 }
+
+After running the previous command, we could query for the item to confirm the update was successful:
+
+db.products.findOne({ title: "iPhoneX" })
+
+And find our document was updated:
+
+{ 
+  _id: ObjectId("507f1fg7bcf865d799439h11"),
+  title: "iPhoneX", 
+  price: 679 
+}
+
+In this case, querying on the title field works fine, assuming the value is unique for every document. Usually, we want to be as specific as possible with our filtering criteria, so we can include multiple fields to add more specificity to our search. Remember that even if multiple documents match the filter criteria, only a single one (the first match) will be updated.
+
+Note: While exploring the updateOne() command, we didn’t cover the use of the <options> parameter. This is because these fields are optional and aren’t required to perform the base action of updating a record. To explore the <options> parameter further, visit the MongoDB documentation for the updateOne() method.
+
+Let’s practice updating using the updateOne() method by returning to our restaurants database.
+
+Instructions
+Checkpoint 1 Passed
+1.
+Connect to the restaurants database. Then, use the .findOne() method to query for the document with the restaurant_id of "50014008" from the listingsAndReviews collection.
+
+
+Hint
+To query a collection for a single document using the findOne() method, you can use the following syntax:
+
+db.<collection>.findOne({ <field>: <value> })
+
+Need another hint?
+You can call the .findOne() method on the listingsAndReviews collection to query for a single document. Be sure to query on the restaurant_id field and provide a value of "50014008".
+
+Once you put it together, your query should look like this:
+
+db.listingsAndReviews.findOne({ restaurant_id: "50014008" });
+
+Checkpoint 2 Passed
+2.
+The cuisine of this restaurant is incorrect. Update the value of the restaurant’s cuisinefield to“American”`.
+
+
+Hint
+Use the .updateOne() method to update a single document in a MongoDB collection. Use the restaurant_id field as the filter and the $set operator to replace the value for the field cuisine.
+
+Need another hint?
+As the first argument, provide a query document that specifies the `restaurant_id` field. As the second argument, provide an update document that uses the `$set` operator to update the `cuisine` field.
+Once you put it together, your query should look as follows:
+
+db.listingsAndReviews.updateOne({ restaurant_id: "50014008" }, { $set: { cuisine: "American" } })
+
+Checkpoint 3 Passed
+3.
+Query the listingsAndReviews collection for the document to ensure it was updated!
+
+
+Hint
+To query a collection for a single document using the findOne() method, you can use the following syntax:
+
+db.<collection>.findOne({ <field>: <value> })
+
+Need another hint?
+You can call the .findOne() method on the listingsAndReviews collection to query for a single document. Be sure to query on the restaurant_id field and provide a value of "50014008".
+
+Once you put it together, your query should look like this:
+
+mongosh
+-------
+est> use restaurants;
+switched to db restaurants
+restaurants> db.listingsAndReviews.findOne({restaurant_id: "50014008" });
+{
+  _id: ObjectId("5eb3d669b31de5d588f484e0"),
+  address: {
+    building: '770',
+    coord: [ -74.00959999999999, 40.636179 ],
+    street: '59 Street',
+    zipcode: '11220'
+  },
+  borough: 'Brooklyn',
+  cuisine: 'Chinese',
+  grades: [
+    {
+      date: ISODate("2014-10-09T00:00:00.000Z"),
+      grade: 'Z',
+      score: 22
+    }
+  ],
+  name: 'D.C.Plzz Seafood',
+  restaurant_id: '50014008'
+}
+restaurants> db.listingsAndReviews.updateOne({restaurant_id: "50014008"}, {$set: {cuisine: "American"}});
+{
+  acknowledged: true,
+  insertedId: null,
+  matchedCount: 1,
+  modifiedCount: 0,
+  upsertedCount: 0
+}
+restaurants> db.listingsAndReviews.findOne({restaurant_id: "50014008" });
+{
+  _id: ObjectId("5eb3d669b31de5d588f484e0"),
+  address: {
+    building: '770',
+    coord: [ -74.00959999999999, 40.636179 ],
+    street: '59 Street',
+    zipcode: '11220'
+  },
+  borough: 'Brooklyn',
+  cuisine: 'American',
+  grades: [
+    {
+      date: ISODate("2014-10-09T00:00:00.000Z"),
+      grade: 'Z',
+      score: 22
+    }
+  ],
+  name: 'D.C.Plzz Seafood',
+  restaurant_id: '50014008'
+}
+restaurants> 
+
+------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+
 
 
 
