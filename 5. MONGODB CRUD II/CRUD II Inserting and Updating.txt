@@ -587,6 +587,228 @@ restaurants>
 
 ------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
+* Updates on Embedded Documents and Arrays
+------------------------------------------
+11 min
+While updating a single document using a single field is helpful, MongoDB also stores data inside of embedded documents. So, what if we want to update a specific field in an embedded 
+document? Consider the following document within a collection named furniture:
+
+{
+  _id: ObjectId("3ldh1fg733kf65d7994393ld"),
+  name: "bedframe",
+  dimensions: {
+    length: 75,
+    width: 38
+  }
+}
+
+Let’s say we wanted to update the width field inside the dimensions embedded document. We could run the following command:
+
+db.furniture.updateOne(
+  { name: "bedframe" },
+  { $set: { "dimensions.width": 54 }}
+);
+
+We can successfully target the width field inside the dimensions embedded document using dot notation.
+
+MongoDB also stores data inside of arrays! If we instead want to update a value within an array, we can use dot notation to access the index of the element we want to update. Let’s look 
+at the following example document for a collection named nbateams:
+
+{
+  _id: ObjectId("402h1fg73cf865d799439k42"),
+  team: "Chicago Bulls",
+  championships: [1991, 1902, 1993, 1996, 1997, 1998]
+}
+
+If we want to update the 2nd element (1902) of the championships array to the correct year, 1992, we could run the following command:
+
+db.nbateams.updateOne(
+  { team: "Chicago Bulls" }, 
+  { $set: {"championships.1": 1992 }}
+)
+
+Once again, the embedded document’s name and the array index must be wrapped in quotations for the command to be successful. Note that we’re using the index of 1 since the year 1902 is 
+the second element of the array, and arrays start at index 0.
+
+Let’s practice updating embedded fields and arrays in our restaurants database!
+
+* Instructions
+--------------
+Checkpoint 1 Passed
+1.
+Connect to the restaurants database. Then, using the listingsAndReviews collection, query for a document with a restaurant_id field with the value"40561796". Observe the properties of the 
+document you find!
+
+
+Hint
+To query a collection for a single document using the findOne() method, you can use the following syntax:
+
+db.<collection>.findOne({ <field>: <value> })
+
+Need another hint?
+You can call the .findOne() method on the listingsAndReviews collection to query for a single document. Be sure to query on the restaurant_id field and provide a value of "40561796".
+
+Once you put it together, your query should look like this:
+
+db.listingsAndReviews.findOne({ restaurant_id: "40561796" });
+
+Checkpoint 2 Passed
+2.
+The street address for this restaurant is incorrect. Update the street value from "36 Street" to "58 street".
+
+
+Hint
+You can call the .updateOne() method on the listingsAndReviews collection to update a document in this collection. Use the restaurant_id field as the filter and the $set operator to 
+replace the value for the embedded field address.
+
+Need another hint?
+As the first argument, provide a query document that specifies the restaurant_id. As the second argument, use the $set operator to update the street field.
+
+The street field is embedded within the address field. Use dot notation to access it. Be sure to wrap the parent and nested fields in quotation marks.
+
+Once you put it together, your query should look like this:
+
+db.listingsAndReviews.updateOne({ restaurant_id: "40561796" }, { $set: { "address.street": "58 street" } })
+
+Checkpoint 3 Passed
+3.
+Query the collection using the findOne() method for the document that was just updated to confirm this information was updated correctly.
+
+
+Hint
+To query a collection for a single document using the findOne() method, you can use the following syntax:
+
+db.<collection>.findOne({ <field>: <value> })
+
+Need another hint?
+You can call the .findOne() method on the listingsAndReviews collection to query for a single document. Be sure to query on the restaurant_id field and provide a value of "40561796".
+
+Once you put it together, your query should look like this:
+
+db.listingsAndReviews.findOne({ restaurant_id: "40561796" });
+
+
+mongosh
+-------
+test> use restaurants
+switched to db restaurants
+restaurants> db.listingsAndReviews.findOne({restaurant_id: "40561796"});
+{
+  _id: ObjectId("5eb3d668b31de5d588f4305b"),
+  address: {
+    building: '3290',
+    coord: [ -73.92430569999999, 40.7565317 ],
+    street: '59 street',
+    zipcode: '11106'
+  },
+  borough: 'Queens',
+  cuisine: 'Mediterranean',
+  grades: [
+    {
+      date: ISODate("2014-06-25T00:00:00.000Z"),
+      grade: 'B',
+      score: 27
+    },
+    {
+      date: ISODate("2013-12-12T00:00:00.000Z"),
+      grade: 'A',
+      score: 12
+    },
+    {
+      date: ISODate("2013-07-03T00:00:00.000Z"),
+      grade: 'A',
+      score: 13
+    },
+    {
+      date: ISODate("2013-01-16T00:00:00.000Z"),
+      grade: 'A',
+      score: 10
+    },
+    {
+      date: ISODate("2012-08-03T00:00:00.000Z"),
+      grade: 'B',
+      score: 14
+    }
+  ],
+  name: 'Cafe Bar',
+  restaurant_id: '40561796'
+}
+restaurants> db.listingsAndReviews.updateOne({restaurant_id: "40561796"},{$set: {"address.street": "58 street"}});
+{
+  acknowledged: true,
+  insertedId: null,
+  matchedCount: 1,
+  modifiedCount: 0,
+  upsertedCount: 0
+}
+restaurants> db.listingsAndReviews.findOne({restaurant_id: "40561796"});
+{
+  _id: ObjectId("5eb3d668b31de5d588f4305b"),
+  address: {
+    building: '3290',
+    coord: [ -73.92430569999999, 40.7565317 ],
+    street: '58 street',
+    zipcode: '11106'
+  },
+  borough: 'Queens',
+  cuisine: 'Mediterranean',
+  grades: [
+    {
+      date: ISODate("2014-06-25T00:00:00.000Z"),
+      grade: 'B',
+      score: 27
+    },
+    {
+      date: ISODate("2013-12-12T00:00:00.000Z"),
+      grade: 'A',
+      score: 12
+    },
+    {
+      date: ISODate("2013-07-03T00:00:00.000Z"),
+      grade: 'A',
+      score: 13
+    },
+    {
+      date: ISODate("2013-01-16T00:00:00.000Z"),
+      grade: 'A',
+      score: 10
+    },
+    {
+      date: ISODate("2012-08-03T00:00:00.000Z"),
+      grade: 'B',
+      score: 14
+    }
+  ],
+  name: 'Cafe Bar',
+  restaurant_id: '40561796'
+}
+
+------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
