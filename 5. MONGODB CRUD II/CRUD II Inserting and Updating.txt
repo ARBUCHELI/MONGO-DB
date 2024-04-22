@@ -785,6 +785,252 @@ restaurants> db.listingsAndReviews.findOne({restaurant_id: "40561796"});
 
 ------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
+* Updating an Array with New Elements
+-------------------------------------
+13 min
+MongoDB provides different array update operators that we can use with the .updateOne() method. In the earlier exercises, we learned to use the $set operator to replace a value. In this 
+exercise, we’ll look at the $push operator.
+
+The $push operator adds (or “pushes”) new elements to the end of an array. It can be used with the .updateOne() method with the following syntax:
+
+db.<collection>.updateOne(
+  <filter>,
+  { $push: { <field1>: <value1>, ... } }
+);
+
+Consider a collection, automobiles, holding a document with data regarding specific car models:
+
+{
+  _id: ObjectId("627934bbfd6a8619040cc287"),
+  make: "Audi",
+  model: "A1",
+  year: [2017, 2019]
+}
+
+If we wanted to add a new year into the array, we could use the $push operator to accomplish this:
+
+db.vehicles.updateOne(
+  { make: "Audi" },
+  { $push: { year: 2020 }}
+);
+
+The updated document would look as follows:
+
+{
+  _id: ObjectId("627934bbfd6a8619040cc287"),
+  make: "Audi",
+  model: "A1",
+  year: [2017, 2019, 2020]
+}
+
+It’s important to note that if the mentioned field is absent in the document to update, the $push operator adds this field to the document as an array and includes the given value as its 
+element.
+
+For example, consider our document from the automobiles collection again. Let’s say we wanted to update the country that manufactures this make of vehicle using the following command:
+
+db.vehicles.updateOne(
+  { make: "Audi" },
+  { $push: { country: "Germany" }}
+);
+
+Because our document did not previously have a field called country, running this command would add the new field to the document as an array and insert one element, the string "Germany". 
+Our output would look as follows:
+
+{
+  _id: ObjectId("627934bbfd6a8619040cc287"),
+  make: "Audi",
+  model: "A1",
+  year: [2017, 2019, 2020],
+  country: [ "Germany" ]
+}
+
+Let’s practice updating array fields with the $push operator with documents in our restaurants database!
+
+* Instructions
+--------------
+Checkpoint 1 Passed
+1.
+Connect to the restaurants database. Then, using the .findOne() method on the listingsAndReviews collection, find the document with the field name with the value of "Cafe Bar". Observe 
+the properties of the document!
+
+
+Hint
+Be sure to connect to the restaurants database first. To query a collection for a single document using the findOne() method, you can use the following syntax:
+
+db.<collection>.findOne({ <field>: <value> })
+
+Need another hint?
+Be sure to pass in a query document as the first argument. Include the name field with a value of "Cafe Bar".
+
+Once you put it together, your query should look like this:
+
+db.listingsAndReviews.findOne({ name: "Cafe Bar" })
+
+Checkpoint 2 Passed
+2.
+Cafe Bar recently got examined again and received a new grade. Insert a new element into the grades array with the following properties:
+
+date: new Date(),
+grade: "B",
+score: 81
+
+
+Hint
+Make sure to use the $push operator with the .updateOne() method to add a new document to an array field. Here is the syntax:
+
+db.<collection>.updateOne(
+  <filter>,
+  { $push: { <field1>: <value1>, ... } }
+);
+
+Need another hint?
+Update the grades array field with a document that specifies the date, grade, and score fields.
+
+Once you put it together, your query should look like this:
+
+db.listingsAndReviews.updateOne({ name: "Cafe Bar" }, { $push: { grades: { date: new Date(), grade: "B", score: 81 } } })
+
+Checkpoint 3 Passed
+3.
+Print out the same document using the name of the restaurant in order to see the updated values.
+
+
+Hint
+Be sure to connect to the restaurants database first. To query a collection for a single document using the findOne() method, you can use the following syntax:
+
+db.<collection>.findOne({ <field>: <value> })
+
+Need another hint?
+Be sure to pass in a query document as the first argument. Include the name field with a value of "Cafe Bar".
+
+Once you put it together, your query should look like this:
+
+db.listingsAndReviews.findOne({ name: "Cafe Bar" })
+
+mongosh
+-------
+test> use restaurants
+switched to db restaurants
+restaurants> db.listingsAndReviews.findOne({name: "Cafe Bar"});
+{
+  _id: ObjectId("5eb3d668b31de5d588f4305b"),
+  address: {
+    building: '3290',
+    coord: [ -73.92430569999999, 40.7565317 ],
+    street: '36 Street',
+    zipcode: '11106'
+  },
+  borough: 'Queens',
+  cuisine: 'Mediterranean',
+  grades: [
+    {
+      date: ISODate("2014-06-25T00:00:00.000Z"),
+      grade: 'B',
+      score: 27
+    },
+    {
+      date: ISODate("2013-12-12T00:00:00.000Z"),
+      grade: 'A',
+      score: 12
+    },
+    {
+      date: ISODate("2013-07-03T00:00:00.000Z"),
+      grade: 'A',
+      score: 13
+    },
+    {
+      date: ISODate("2013-01-16T00:00:00.000Z"),
+      grade: 'A',
+      score: 10
+    },
+    {
+      date: ISODate("2012-08-03T00:00:00.000Z"),
+      grade: 'B',
+      score: 14
+    },
+    {
+      date: ISODate("2024-04-22T13:18:29.184Z"),
+      grade: 'B',
+      score: 81
+    }
+  ],
+  name: 'Cafe Bar',
+  restaurant_id: '40561796'
+}
+restaurants> db.listingsAndReviews.updateOne({name: "Cafe Bar"},{$push: {grades: {date: new Date(), grade: "B", score: 81}}});
+{
+  acknowledged: true,
+  insertedId: null,
+  matchedCount: 1,
+  modifiedCount: 1,
+  upsertedCount: 0
+}
+restaurants> db.listingsAndReviews.findOne({name: "Cafe Bar"});
+{
+  _id: ObjectId("5eb3d668b31de5d588f4305b"),
+  address: {
+    building: '3290',
+    coord: [ -73.92430569999999, 40.7565317 ],
+    street: '36 Street',
+    zipcode: '11106'
+  },
+  borough: 'Queens',
+  cuisine: 'Mediterranean',
+  grades: [
+    {
+      date: ISODate("2014-06-25T00:00:00.000Z"),
+      grade: 'B',
+      score: 27
+    },
+    {
+      date: ISODate("2013-12-12T00:00:00.000Z"),
+      grade: 'A',
+      score: 12
+    },
+    {
+      date: ISODate("2013-07-03T00:00:00.000Z"),
+      grade: 'A',
+      score: 13
+    },
+    {
+      date: ISODate("2013-01-16T00:00:00.000Z"),
+      grade: 'A',
+      score: 10
+    },
+    {
+      date: ISODate("2012-08-03T00:00:00.000Z"),
+      grade: 'B',
+      score: 14
+    },
+    {
+      date: ISODate("2024-04-22T13:18:29.184Z"),
+      grade: 'B',
+      score: 81
+    },
+    {
+      date: ISODate("2024-04-22T13:20:34.419Z"),
+      grade: 'B',
+      score: 81
+    }
+  ],
+  name: 'Cafe Bar',
+  restaurant_id: '40561796'
+}
+
+------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
