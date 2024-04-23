@@ -1139,6 +1139,638 @@ restaurants>
 
 ------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
+* Updating Multiple Documents
+-----------------------------
+8 min
+So far, we have learned how to insert and update individual documents in a collection, but what if we want to update multiple documents simultaneously? This is where the 
+MongoDB .updateMany() method comes in handy.
+
+The .updateMany() method allows us to update all documents that satisfy a condition. The .updateMany() method looks and behaves similarly to .updateOne(), but instead of updating the 
+first matching document, it updates all matching documents:
+
+Let’s examine its syntax:
+
+db.<collection>.updateMany(
+  <filter>, 
+  <update>, 
+  <options>
+);
+
+Like before, we have three main parameters:
+
+	. filter: The selection criteria for the update.
+
+	. update: The modifications to apply.
+
+	. options: Other options that could be applied, such as upsert.
+
+Let’s see how we can apply the method to an example. Suppose a company sets a minimum salary for all employees. We want to update all employees with a salary of $75,000 to the new minimum 
+of $80,000. Here is what our collection of employees might look like:
+
+{
+  _id: ObjectId(...),
+  name: "Rose Nyland",
+  department: "Information Technology",
+  salary: 75000
+},
+{
+  _id: ObjectId(...),
+  name: "Dorothy Zbornak",
+  department: "Human Resources",
+  salary: 75000
+},
+{
+  _id: ObjectId(...),
+  name: "Sophia Petrillo",
+  department: "Human Resources",
+  salary: 75000
+},
+{
+  _id: ObjectId(...),
+  name: "Blanche Devereaux",
+  department: "Sales",
+  salary: 80000
+}
+
+We can use .updateMany() to target all employees with the same salary in order to increase it:
+
+db.employees.updateMany(
+  { salary: 75000 },
+  { $set: { salary: 80000 }}
+)
+
+In the above example, we’re using the salary as the filter criteria: { salary: 75000}. This targets any document with the salary set to 75000. We can then use the second parameter (via 
+the $set operator) to update the specified fields in those documents. The collection would now look like this:
+
+{
+  _id: ObjectId(...),
+  name: "Rose Nyland",
+  department: "Information Technology",
+  salary: 80000
+},
+{
+  _id: ObjectId(...),
+  name: "Dorothy Zbornak",
+  department: "Human Resources",
+  salary: 80000
+},
+{
+  _id: ObjectId(...),
+  name: "Sophia Petrillo",
+  department: "Human Resources",
+  salary: 80000
+},
+{
+  _id: ObjectId(...),
+  name: "Blanche Devereaux",
+  department: "Sales",
+  salary: 80000
+}
+
+Notice how all employees with the salary of 75000 had their salary increased to 80000 while the employee whose salary was already 80000 stayed the same.
+
+Let’s jump back into the restaurants database to practice using the updateMany() method to update multiple documents simultaneously.
+
+* Instructions
+--------------
+Checkpoint 1 Passed
+1.
+When inserting the information regarding the boroughs for the restaurant collection, there was a mixup between "Bronx" and "Staten Island".
+
+Connect to the restaurants database. Then, using the listingsAndReviews collection, update all the documents that have the borough field as "Bronx" to be "Staten Island" instead.
+
+
+Hint
+You can use the $set operator in the update parameter with the .updateMany() method to update multiple documents in a collection. Here is the syntax:
+
+db.employees.updateMany(
+  <filter>,
+  <update>
+)
+
+Need another hint?
+Include a query document that specifies the borough field as the first argument.
+
+Once you put it together, your query should look like this:
+
+db.listingsAndReviews.updateMany({ borough: "Bronx"}, { $set: { borough: "Staten Island"} })
+
+Checkpoint 2 Passed
+2.
+Query the database for all the documents with the borough of "Staten Island" to see the updated documents.
+
+
+Hint
+Remember, you can query a collection using the following syntax:
+
+db.<collection>.find(<query>);
+
+Need another hint?
+Be sure to include a query document as the first argument to the .find() method. Specify the borough field with the value "Staten Island" as your query.
+
+Once you put it together, your query should look like this:
+
+mongosh
+-------
+test> use restaurants
+switched to db restaurants
+restaurants> db.listingsAndReviews.updateMany({borough: "Bronx"}, {$set: {borough: "Staten Island"}});
+{
+  acknowledged: true,
+  insertedId: null,
+  matchedCount: 4,
+  modifiedCount: 4,
+  upsertedCount: 0
+}
+restaurants> db.listingsAndReviews.find({borough: "Staten Island"});
+[
+  {
+    _id: ObjectId("5eb3d669b31de5d588f477aa"),
+    address: {
+      building: '160',
+      coord: [ -73.9153575, 40.83934929999999 ],
+      street: 'East 170 Street',
+      zipcode: '10452'
+    },
+    borough: 'Staten Island',
+    cuisine: 'Juice, Smoothies, Fruit Salads',
+    grades: [
+      {
+        date: ISODate("2014-08-29T00:00:00.000Z"),
+        grade: 'A',
+        score: 10
+      },
+      {
+        date: ISODate("2014-03-27T00:00:00.000Z"),
+        grade: 'A',
+        score: 5
+      }
+    ],
+    name: "D' Licua Fruit & Juice",
+    restaurant_id: '50002586'
+  },
+  {
+    _id: ObjectId("5eb3d669b31de5d588f47a2f"),
+    address: {
+      building: '2102',
+      coord: [ -73.8436674, 40.8562685 ],
+      street: 'Eastchester Road',
+      zipcode: '10461'
+    },
+    borough: 'Staten Island',
+    cuisine: 'Chinese',
+    grades: [
+      {
+        date: ISODate("2014-07-16T00:00:00.000Z"),
+        grade: 'A',
+        score: 7
+      },
+      {
+        date: ISODate("2013-12-18T00:00:00.000Z"),
+        grade: 'A',
+        score: 10
+      }
+    ],
+    name: 'Golden China Pavilion',
+    restaurant_id: '50004482'
+  },
+  {
+    _id: ObjectId("5eb3d669b31de5d588f45981"),
+    address: {
+      building: '3421',
+      coord: [ -73.88330289999999, 40.881147 ],
+      street: 'Jerome Avenue',
+      zipcode: '10467'
+    },
+    borough: 'Staten Island',
+    cuisine: 'Chinese',
+    grades: [
+      {
+        date: ISODate("2014-12-16T00:00:00.000Z"),
+        grade: 'A',
+        score: 12
+      },
+      {
+        date: ISODate("2013-12-24T00:00:00.000Z"),
+        grade: 'A',
+        score: 12
+      },
+      {
+        date: ISODate("2013-07-17T00:00:00.000Z"),
+        grade: 'A',
+        score: 7
+      },
+      {
+        date: ISODate("2013-02-06T00:00:00.000Z"),
+        grade: 'A',
+        score: 9
+      },
+      {
+        date: ISODate("2012-05-02T00:00:00.000Z"),
+        grade: 'A',
+        score: 11
+      }
+    ],
+    name: 'Sam Ho Takeout Restaurant',
+    restaurant_id: '41536371'
+  },
+  {
+    _id: ObjectId("5eb3d669b31de5d588f45b84"),
+    address: {
+      building: '1354',
+      coord: [ -73.9216818, 40.8408372 ],
+      street: 'Edward L Grant Highway',
+      zipcode: '10452'
+    },
+    borough: 'Staten Island',
+    cuisine: 'Spanish',
+    grades: [
+      {
+        date: ISODate("2014-02-27T00:00:00.000Z"),
+        grade: 'A',
+        score: 8
+      },
+      {
+        date: ISODate("2013-08-28T00:00:00.000Z"),
+        grade: 'A',
+        score: 5
+      },
+      {
+        date: ISODate("2013-02-14T00:00:00.000Z"),
+        grade: 'C',
+        score: 0
+      },
+      {
+        date: ISODate("2012-06-29T00:00:00.000Z"),
+        grade: 'A',
+        score: 12
+      },
+      {
+        date: ISODate("2012-01-31T00:00:00.000Z"),
+        grade: 'A',
+        score: 5
+      },
+      {
+        date: ISODate("2011-09-03T00:00:00.000Z"),
+        grade: 'B',
+        score: 17
+      }
+    ],
+    name: 'Emergency Snack Bar',
+    restaurant_id: '41556875'
+  }
+]
+restaurants> 
+
+------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+* Modifying Documents
+---------------------
+19 min
+In MongoDB, sometimes we may want to update a document but also return the document we modified. The .findAndModify() method modifies and returns a single document. By default, the 
+document it returns does not include the modifications made on the update. This method can be particularly useful if we want to see (or use) the state of an updated document after we 
+perform an update operation. This method also has a lot of flexible optional parameters that aren’t available in other methods.
+
+Let’s take a look at the syntax of the .findAndModify() method below:
+
+db.<collection>.findAndModify({
+  query: <document>,
+  update: <document>,
+  new: <boolean>,
+  upsert: <boolean>,
+  ...
+});
+
+Note that there are four commonly used fields:
+
+	1. query: Defines the selection criteria for which record needs modification.
+
+	2. update: A document that specifies the fields we want to update and the changes we want to make to them.
+
+	3. new: When true, this field returns the modified document rather than the original.
+
+	4. upsert: Creates a new document if the selection criteria fails to match a document.
+
+Note: In addition to these fields, the .findAndModify() method accepts many other options. We will not be covering them here, but more details can be found in the documentation for 
+the .findAndModify() method.
+
+With this method, there are a lot of scenarios that can occur. First, let’s consider a collection called foodTrucks containing the following document:
+
+{
+  _id: ObjectId(...),
+  name: "Criff Dogs",
+  address: "15 Bedford Ave",
+  shutdown: false
+},
+{
+  _id: ObjectId(...),
+  name: "Sals Pizza",
+  address: "249 Otter Place",
+  shutdown: false
+}
+
+The first scenario we can observe is if we wanted to update a document and see the updated document state pre-modification (before it was changed). This is the default behavior of the 
+method. So, if we were to change the shutdown property of the document above with the name "Criff Dogs", we can run the following command:
+
+db.foodTrucks.findAndModify({
+  query:  { name: "Criff Dogs" },
+  update: { shutdown: true }
+});
+
+The output of this method would be the document before it was modified. Notice the shutdown field is still false, even though we changed it to true:
+
+//Output
+{
+  _id: ObjectId(...),
+  name: "Criff Dogs",
+  address: "15 Bedford Ave",
+  shutdown: false
+}
+
+The next scenario is similar but would use the new field to return a different output. If we ran the following query:
+
+db.foodTrucks.findAndModify({
+  query:  { name: "Criff Dogs" },
+  update: { shutdown: true },
+  new: true
+});
+
+We would be able to see the new modified document as the output. Notice the value in the output for the shutdown field is true:
+
+//Output
+{
+  _id: ObjectId(...),
+  name: "Sals Pizza",
+  address: "249 Otter Place",
+  shutdown: true
+}
+
+Lastly, we can use the upsert field to be able to add documents if they do not currently exist in the database. So if we ran the following command:
+
+db.foodTrucks.findAndModify({
+  query:  { name: "Ben and Jerry", address: "17 Cliff Pl" },
+  update: { shutdown: false },
+  new: true,
+  upsert: true
+});
+
+MongoDB would then search the collection foodTrucks based on the query argument, and if it didn’t find a match, it would create the document. So our new food truck would be added to the 
+collection, and our return output would be:
+
+//Output
+{
+  _id: ObjectId(...),
+  name: "Ben and Jerry",
+  address: "17 Cliff Pl",
+  shutdown: false
+}
+
+We might notice that .updateOne() and .findAndModify() behave quite similarly. Both will update a document in our database or create one if it doesn’t exist. So what are the main 
+differences? Well, .findAndModify() returns the document that you modify, whereas .updateOne() does not. Moreover, .findAndModify() allows us to specify whether we want to return the old 
+or new (modified version) of the updated document with the use of the new parameter.
+
+Let’s practice using the findAndModify() method with our restaurants collection!
+
+* Instructions
+--------------
+Checkpoint 1 Passed
+1.
+Connect to the restaurants database. Then use the .findOne() method to query the listingsAndReviews collection for the document with the name of "Jolie Cantina". Observe the document you 
+find!
+
+
+Hint
+Be sure to connect to the restaurants database first. To query a collection for a single document using the findOne() method, you can use the following syntax:
+
+db.<collection>.findOne({ <field>: <value> })
+
+Need another hint?
+Checkpoint 2 Passed
+2.
+Use the findAndModify() method to change value of the "cuisine" field for restaurant named "Jolie Cantina" from "French" to "American". Make sure the output returns the new modified 
+document.
+
+
+Hint
+Call the .findAndModify() method to find and update a single document from the listingsAndReviews collection. As a reminder, the syntax is as follows:
+
+db.<collection>.findAndModify({
+  query: <document>,
+  update: <document>,
+  new: <boolean>,
+  upsert: <boolean>,
+  ...
+});
+
+Remember to use the new field with the value true to return the new modified document.
+
+Need another hint?
+Be sure to format the argument as a document that includes the query, update, and new fields.
+
+Once you put it together, your query should look like this:
+
+db.listingsAndReviews.findAndModify({ query: { name: "Jolie Cantina" }, update: { cuisine: "American" }, new: true })
+
+Checkpoint 3 Passed
+3.
+We want to ensure that a restaurant named Jacobs Bagels has the correct information in our restaurants database. We are unsure if the restaurant is currently in the listingsAndReviews 
+collection. Use .findAndModify() to add a the document (if it does not exist) to the listingsAndReviews collection with the following data:
+
+{
+  name: "Jacobs Bagels",
+  cuisine: "Jewish/Kosher",
+  borough: "Brooklyn"
+}
+
+Make sure to return the newly updated (or created) document.
+
+
+Hint
+Be sure to include the name field in the document parameter so that this field will be included in the newly created document.
+
+Need another hint?
+Make sure to add the upsert field to insert a new document in case the document does not already exist. Include the new field and assign it to true to return the updated (or newly 
+created) document.
+
+Once you put it together, your query should look like this:
+
+db.listingsAndReviews.findAndModify({ query: { name: "Jacobs Bagels" }, update: { name: "Jacobs Bagels", cuisine: "Jewish/Kosher", borough: "Brooklyn" }, upsert: true, new: true })
+
+mongosh
+-------
+test> use restaurants
+switched to db restaurants
+restaurants> db.listingsAndReviews.findOne({name: "Jolie Cantina"});
+{
+  _id: ObjectId("5eb3d669b31de5d588f45ddb"),
+  address: {
+    building: '241',
+    coord: [ -73.9923132, 40.6835431 ],
+    street: 'Smith Street',
+    zipcode: '11231'
+  },
+  borough: 'Brooklyn',
+  cuisine: 'French',
+  grades: [
+    {
+      date: ISODate("2015-01-06T00:00:00.000Z"),
+      grade: 'Z',
+      score: 22
+    },
+    { date: ISODate("2014-05-29T00:00:00.000Z"), grade: 'A', score: 5 },
+    {
+      date: ISODate("2013-04-17T00:00:00.000Z"),
+      grade: 'A',
+      score: 12
+    },
+    { date: ISODate("2012-03-30T00:00:00.000Z"), grade: 'A', score: 4 }
+  ],
+  name: 'Jolie Cantina',
+  restaurant_id: '41580873'
+}
+restaurants> db.listingsAndReview.findAndModify({query: {name: "Jolie Cantina"}, {update: {cuisine: "American"}, new: true, upsert: false});
+Uncaught:
+SyntaxError: Unexpected token (1:68)
+
+> 1 | db.listingsAndReview.findAndModify({query: {name: "Jolie Cantina"}, {update: {cuisine: "American"}, new: true, upsert: false});
+    |                                                                     ^
+  2 |
+
+restaurants> db.foodTrucks.findAndModify({query: {name: "Jolie Cantina"}, update: {cuisine: "American"}, new: true, upsert: true})
+{ _id: ObjectId("66277f3e151383dff52efc5f"), cuisine: 'American' }
+restaurants> db.listingsAndReviews.findAndModify({query: {name: 
+... 
+restaurants> db.listingsAndReviews.findAndModify({query: {name: "Jolie Cantina"}, update: {cuisine: "American"}, new: true});
+{ _id: ObjectId("5eb3d669b31de5d588f45ddb"), cuisine: 'American' }
+restaurants> db.listingsAndReviews.findAndModify({query: {name: "Jacobs Bagels"}, update: {cuisine: "Jewish/Kosher", borough: "Brooklyn"}, new: true, upsert: true});
+{
+  _id: ObjectId("66278074151383dff52efca4"),
+  cuisine: 'Jewish/Kosher',
+  borough: 'Brooklyn'
+}
+restaurants> db.listingsAndReviews.findAndModify({query: {name: "Jacobs Bagels"}, update: {name: "Jacobs Bagels", cuisine: "Jewish/Kosher", borough: "Brooklyn"}, new: true, upsert: true});
+{
+  _id: ObjectId("662780c4151383dff52efcb6"),
+  name: 'Jacobs Bagels',
+  cuisine: 'Jewish/Kosher',
+  borough: 'Brooklyn'
+}
+restaurants> 
+
+------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+* Review
+--------
+1 min
+Great job! We’ve covered numerous topics regarding creating and updating documents in collections. Let’s recap some key takeaways from this lesson:
+
+	. The _id field is a unique identifier for documents in a collection. By default, MongoDB assigns an ObjectId value to the _id field for each document.
+
+	. Individual documents can be added to a collection with .insertOne(), and the document to be inserted is provided as an argument.
+
+	. Multiple documents can be inserted into a collection with the .insertMany() method. An array containing all the documents to insert is passed in an argument.
+
+	. The .updateOne() method is used to update the first document within the collection that matches a given query.
+
+	. We can use .updateMany() to update multiple matching documents simultaneously.
+
+	. The $push operator appends a specified value to an array.
+
+	. The .findAndModify() method modifies and returns a single document in a collection. By default, it returns the original document, and if no matching document is found, a new one 
+	can be inserted by adding the upsert option.
+
+In addition to the methods we’ve learned throughout this lesson, MongoDB offers us other syntax and commands that can be useful when inserting, updating, or replacing documents:
+
+	. The ordered parameter can be provided to the .insertMany() method. It accepts a boolean value, and, if set to false, will insert the documents in an unordered format to increase 
+	performance.
+
+	. The $unset operator can be provided to the .updateOne() or .updateMany() method. It removes a particular field from a document.
+
+	. The .findOneAndUpdate() method is similar to .updateOne(), but instead of returning a document acknowledging the success or failure of our operation, it returns either the 
+	original or updated document.
+
+	. The .renameCollection() method allows us to update the name of our collection without modifying any of its documents.
+
+	. The .bulkWrite() method allows us to perform multiple write operations (updating or inserting) with controls for order of execution.
+
+There are many different implementations of inserting or modifying data in MongoDB, so make sure to explore the docs for more examples!
+
+* Instructions
+--------------
+We have provided you with the listingsAndReviews collection. Before moving on, spend some time experimenting with writing queries using the syntax you learned throughout this lesson. If 
+you are up for a challenge, try any of the following tasks listed below. Remember to first connect to the restaurants database to access the listingsAndReviews collection. Good luck, and 
+click Up Next when you are ready to move on!
+
+Optional Tasks:
+
+	. Rename the listingsAndReviews collection to a name of your choice.
+
+	. Update all the restaurants from your favorite NYC borough by removing the grades field. They are all a 'A' in your eyes!
+
+	. Use .bulkWrite() to perform the following operations in any order:
+	
+	. Add three documents using insertOne.
+
+	. Update two documents using updateMany.
+
+	. Replaces a document using replaceOne.
+
+------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
