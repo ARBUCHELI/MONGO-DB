@@ -1019,6 +1019,159 @@ restaurants> db.listingsAndReviews.findOne({name: "Cafe Bar"});
 
 ------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
+* Upserting a Document
+----------------------
+10 min
+In the previous exercises, we looked at different ways to update and insert data into a collection. Now, we’ll learn about combining both operations using upsert.
+
+The upsert option is an optional parameter we can use with update methods such as .updateOne(). It accepts a boolean value, and if assigned to true, upsert will give our .updateOne() 
+method the following behavior:
+
+	1. Update data if there is a matching document.
+
+	2. Insert a new document if there’s no match based on the query criteria.
+
+Let’s take a look at its syntax below:
+
+db.<collection>.updateOne(
+  <filter>, 
+  <update>, 
+  { upsert: <boolean> }
+);
+
+The upsert parameter is false by default. If the property is omitted, the method will only update the documents that match the query. If no existing documents match the query, the 
+operation will complete without making any changes to the data.
+
+To see the upsert option in action, consider a collection named pets, holding a large number of documents with the following structure:
+
+{
+  _id: ObjectId(...),
+  name: "Luna",
+  type: "Cat",
+  age: 2
+}
+
+Imagine it’s Luna’s birthday, and we want to be sure that we capture her current age, but we aren’t sure whether or not we have an existing document for her. This would be an excellent 
+opportunity to use upsert since one of two things will happen:
+
+	. If Luna does not exist in the database, our command will create the document
+
+	. If Luna does exist, the document will be updated
+
+To upsert our document for Luna, we can call the .updateOne() command as follows:
+
+db.pets.updateOne(
+  { name: "Luna", type: "Cat"},
+  { $set: { age: 3 }},
+  { upsert: true }
+)
+
+As noted, this command would search our pets collection for a document where the name is "Luna" and the type is "Cat". If such a document exists, its age field would be updated. 
+Otherwise, the following document would be inserted into our collection:
+
+{
+  _id: ObjectId(...),
+  name: "Luna",
+  type: "Cat",
+  age: 3
+}
+
+Let’s spend some time practicing using the upsert option with the .updateOne() method.
+
+* Instructions
+--------------
+Checkpoint 1 Passed
+1.
+Connect to the restaurants database. Then, in the listingsAndReviews collection, find and update the restaurant with the name "Vinnys" to have the following properties. If the document 
+does not exist, it should be added with these properties.
+
+{
+  borough: "Queens",
+  cuisine: "Italian"
+}
+
+
+Hint
+Be sure to connect to the restaurants database first. To query a collection for a single document using the findOne() method, you can use the following syntax:
+
+db.<collection>.findOne({ <field>: <value> })
+
+Need another hint?
+Include an options document as the third parameter and set the upsert option to true to insert a document if it doesn’t already exist.
+
+Once you put it together, your query should look like this:
+
+db.listingsAndReviews.updateOne({ name: "Vinnys" }, { $set: { borough: "Queens", cuisine: "Italian" } }, { upsert: true })
+
+Checkpoint 2 Passed
+2.
+Use the .findOne() method to query the collection for the newly updated document. Use the name field as the query.
+
+
+Hint
+You can use the command .findOne() to query a collection for a single document.
+
+Need another hint?
+Be sure to include a query document as the first parameter. Specify the name field with the value "Vinnys".
+
+Once you put it together, your query should look like this:
+
+mongosh
+-------
+test> use restaurants
+switched to db restaurants
+restaurants> db.listingsAndReviews.updateOne({name: "Vinnys"}, {$set: {borough: "Queens", cuisine: "Italian"}}, {upsert: true});
+{
+  acknowledged: true,
+  insertedId: ObjectId("66277881efafce9061b96b5a"),
+  matchedCount: 0,
+  modifiedCount: 0,
+  upsertedCount: 1
+}
+restaurants> db.listingsAndReviews.findOne({name: "Vinnys"});
+{
+  _id: ObjectId("66277881efafce9061b96b5a"),
+  name: 'Vinnys',
+  borough: 'Queens',
+  cuisine: 'Italian'
+}
+restaurants> 
+
+------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
