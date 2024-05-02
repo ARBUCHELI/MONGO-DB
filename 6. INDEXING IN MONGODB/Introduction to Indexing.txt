@@ -868,7 +868,52 @@ restaurants>
 
 -----------------------------------------------------------------------------------------------------------------------------------------------------------------
 
+* Review
+--------
+1 min
+We’ve just learned how to create and manage indexes in MongoDB. Let’s recap some key takeaways from this lesson:
 
+	. An index is a data structure that captures a subset of a collection’s data in an easy-to-traverse form. We can use the .createIndex() method to create an index.
+
+	. A single field index is an index that references one field from a document.
+
+	. We can use the .explain() method with the "executionStats" argument to gain insight into the performance implications of our index on our query.
+
+	. A compound index is an index that contains references to multiple fields within a document.
+
+	. Multikey indexes are automatically created whenever we create an index on a field that contains an array value. Multikey indexes create an index key for each element in the 
+	array.
+
+	. A compound index cannot support two multikey indexes.
+
+	. The .dropIndex() method deletes an index without modifying the original collection.
+
+In addition to the syntax we’ve learned throughout this lesson, MongoDB offers us other syntax and commands that can be useful when indexing collections:
+
+	. Partial Indexes only index documents in a collection that meet specific filter criteria. By indexing a subset of a collection’s documents, partial indexes consume less storage 
+	and have improved performance.
+
+	. Sparse Indexes only index documents that include the specified index field. Any documents that do not have the field will be excluded from the index. Much like partial indexes, 
+	these indexes can use significantly less storage and have relatively improved performance compared to non-sparse indexes.
+
+	. TTL Indexes are special single-field indexes that MongoDB can use to automatically remove documents from a collection after a certain amount of time or at a specific clock 
+	time.
+
+	. Unique Indexes enforce unique values for the indexed fields. Creating a unique index on a collection will restrict the insertion or update of documents where the indexed field’s 
+	value matches an existing value in the index.
+
+Before moving on, spend some time creating and deleting indexes using what you’ve learned in this lesson!
+
+* Instructions
+--------------
+We have provided you with the listingsAndReviews collection. Before moving on, experiment with the indexing methods you learned throughout this lesson. If you are up for a challenge, try 
+any of the following tasks listed below. Remember to first connect to the restaurants database to access the listingsAndReviews collection. Good luck, and click Up Next when you are ready 
+to move on!
+
+Optional Tasks:
+
+Create a partial index for restaurants inside of the listingsAndReviews collection that captures only restaurants that have at least one grade of "A".
+Create a TTL index for the restaurants grades field to expire after a grade’s date field elapses a certain amount of time.
 
 
 
