@@ -1,0 +1,203 @@
+# CRUD II: DELETING DOCUMENTS
+-----------------------------
+
+* Deleting a Document
+---------------------
+6 min
+So far we have learned how to Create, Read, and Update data using different methods provided by MongoDB. Let’s explore the last CRUD operation, Delete.
+
+There are certain situations when data is no longer necessary or becomes obsolete. MongoDB provides us a couple options to permanently remove unwanted documents from a collection. In this 
+exercise, we’ll focus on learning how to use the .deleteOne() method to remove a single document from a collection.
+
+In order to use .deleteOne(), we must provide specific filtering criteria to find the document we want to delete. MongoDB will look for the first document in the collection that matches 
+the criteria and delete it. Let’s take a closer look at the syntax:
+
+db.<collection>.deleteOne(<filter>, <options>);
+
+Note in the syntax above, the .deleteOne() method takes two arguments:
+
+	. filter: A document that provides selection criteria for the document to delete.
+
+	. options: A document where we can include optional fields to provide more specifications to our operation, such as a writeConcern.
+
+To see .deleteOne() in action, consider a collection, monsters, with the following documents:
+
+{
+  _id: ObjectId(...),
+  name: "Luca",
+  age: 100,
+  type: "Hydra"
+},
+{
+  _id: ObjectId(...),
+  name: "Lola",
+  age: 95,
+  type: "Hydra"
+},
+{
+  _id: ObjectId(...),
+  name: "Igor",
+  age: 95,
+  type: "Chimera"
+},
+
+If we want to delete a single monster with an age of 95, we can run the following command:
+
+db.monsters.deleteOne({ age: 95 });
+
+If the command is successful, MongoDB will confirm the document was deleted with the following output:
+
+{ acknowledged: true, deletedCount: 1 }
+
+The collection would then be left with these remaining documents:
+
+{
+  _id: ObjectId(...),
+  Name: "Luca",
+  age: 100,
+  type: "Hydra"
+},
+{
+  _id: ObjectId(...),
+  name: "Igor",
+  age: 95,
+  type: "Chimera"
+},
+
+Notice that only one of the documents in the collection with the age of 95 was deleted. When the filter criteria is non-unique, the document that gets deleted is the first one that 
+MongoDB identifies when performing the operation. Which document is found first depends on several factors which can include insertion order and the presence of indexes relevant to the 
+filter.
+
+In the following exercises, we’ll practice using the .deleteOne() method with the same collection from the previous lesson, restaurants.
+
+* Instructions
+--------------
+Checkpoint 1 Passed
+1.
+Connect to the restaurants database. Then, using the listingsAndReviews collection, find a document with the name "Wakamba".
+
+
+Hint
+Use the .find() method to query your collection for documents. Provide a query argument to specify conditions for your search.
+
+Need another hint?
+Your query should look as follows:
+db.listingsAndReviews.find({ name: "Wakamba" });
+
+Checkpoint 2 Passed
+2.
+Look at that! We have two documents with the same name. Delete one of them by using the name field as the filtering criteria.
+
+
+Hint
+Call the .deleteOne() method on the listingsAndReviews collection. Remember to pass the filtering criteria using the name field with the value of "Wakamba".
+
+Need another hint?
+Your query should look as follows:
+db.listingsAndReviews.deleteOne({ name: "Wakamba" });
+
+Checkpoint 3 Passed
+3.
+Search your collection again to confirm that you only have one document with the name Wakamba in your collection.
+
+
+Hint
+Use the .find() method to query your collection for documents. Provide a query argument to specify conditions for your search.
+
+Need another hint?
+Your query should look as follows:
+db.listingsAndReviews.find({ name: "Wakamba" });
+
+mongosh
+-------
+test> use restaurants
+switched to db restaurants
+restaurants> db.listingsAndReviews.find({name: "Wakamba"});
+[
+  {
+    _id: ObjectId("62cfce3774243a51fc2adb7a"),
+    address: {
+      building: '543',
+      coord: [ -73.9922175, 40.7543506 ],
+      street: '8 Avenue',
+      zipcode: '10018'
+    },
+    borough: 'Manhattan',
+    cuisine: 'American',
+    grades: [
+      {
+        date: ISODate("2014-12-29T00:00:00.000Z"),
+        grade: 'A',
+        score: 7
+      },
+      {
+        date: ISODate("2014-06-26T00:00:00.000Z"),
+        grade: 'A',
+        score: 12
+      },
+      {
+        date: ISODate("2013-06-03T00:00:00.000Z"),
+        grade: 'A',
+        score: 13
+      },
+      {
+        date: ISODate("2012-05-29T00:00:00.000Z"),
+        grade: 'A',
+        score: 2
+      },
+      {
+        date: ISODate("2012-01-26T00:00:00.000Z"),
+        grade: 'A',
+        score: 10
+      }
+    ],
+    name: 'Wakamba',
+    restaurant_id: '40564625'
+  }
+]
+restaurants> db.listingsAndReviews.deleteOne({name: "Wakamba"});
+{ acknowledged: true, deletedCount: 1 }
+restaurants> db.listingsAndReviews.find({name: "Wakamba"});
+
+restaurants> 
+
+------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
