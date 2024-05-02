@@ -103,6 +103,360 @@ cuisine_-1
 
 ------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
+* Performance Insights with .explain()
+--------------------------------------
+10 min
+Since indexing in MongoDB is tied closely to database performance, it would be ideal to have a way to see how our indexes impact our queries. The .explain() method can offer us insight 
+into the performance implications of our indexes. The method has the following syntax:
+
+db.<collection>.find(...).explain(<verbose>)
+
+Note that the method is appended to the .find() method. It also takes one string parameter named verbose that specifies what the method should explain. The possible values are: 
+"queryPlanner", "executionStats", and "allPlansExecution". Each value offers meaningful insights on a query. To gain insights regarding the execution of the winning query plan for a 
+query, we can use the "executionStats" option.
+
+To see .explain() in action, let’s refer back to our study abroad example from the previous exercise. Let’s examine how to use this method by appending the .explain() method to our query 
+from the previous exercise:
+
+db.students.find({ year_abroad: { $gt: 2019 }}).explain('executionStats');
+
+Running our query with "executionStats" outputs a series of objects containing detailed information about our operation. We won’t include the entire output below, but rather we’ll focus 
+on a specific object, called executionStats.
+
+If we were to execute the .explain() method before creating our index on the year_abroad field, the output might look something like this:
+
+executionStats: {
+  executionSuccess: true,
+  nReturned: 1336,
+  executionTimeMillis: 140,
+  totalKeysExamined: 0,
+  totalDocsExamined: 5555,
+  executionStages: {
+    …
+  }
+}
+
+Examine the nReturned, totalDocsExamined, and executionTimeMillis fields. Notice that out of 5555 total documents, only 1336 were returned by our query, which took approximately 140 
+milliseconds.
+
+Now let’s look at what the output of our query might look like after we index the year_abroad field:
+
+executionStats: {
+  executionSuccess: true,
+  nReturned: 1336,
+  executionTimeMillis: 107,
+  totalKeysExamined: 1336,
+  totalDocsExamined: 1336,
+  executionStages: {
+   …
+  }
+}
+
+Check out the nReturned and totalDocsExamined fields again. Notice anything?
+
+When we ran our query after creating our index, we still returned 1336 documents, but instead of examining the entire collection, 5555 documents, we only examined the 1336 we returned.
+This is because our query first scanned the index to identify documents that matched our filter, then returned only the corresponding documents without browsing every document in the 
+collection.
+
+Take a look at the executionTimeMillis for each query. You’ll also notice that our query after creating the index took 107 milliseconds, while our query before creating the index took a 
+bit longer, 140 milliseconds. This might not seem like much, but if we were working with a collection containing tens or hundreds of thousands of documents, the time difference would 
+likely be much more significant.
+
+Let’s practice using the .explain() method to see the power of indexing!
+
+* Instructions
+--------------
+Checkpoint 1 Passed
+1.
+Let’s create an index on the name field for documents in the listingsAndReviews collection and compare the execution stats of a query with and without the index to ensure the index is 
+performing efficiently.
+
+First, query the listingsAndReviews collection for a restaurant named "Osaka Japanese Fusion". Use the .explain() method with the "executionStats" argument to see the execution stats for 
+your query without using an index. Take note of the nReturned and totalDocsExamined fields.
+
+
+Hint
+You can use the .find() method to search for a document in a collection. Be sure to provide the filter { name: "Osaka Japanese Fusion" } as an argument. Append the .explain() method with 
+"executionStats" as an argument to see information about your query.
+
+Need another hint?
+Once you put it together, your query should look like this:
+
+db.listingsAndReviews.find({name: "Osaka Japanese Fusion"}).explain("executionStats")
+
+Checkpoint 2 Passed
+2.
+Next, create an index on the name field in ascending order.
+
+
+Hint
+Make sure to append the .createIndex() method to the collection with a document containing the relevant field passed in as an argument. Assign 1 to the name field to organize the index in 
+ascending or alphabetical order.
+
+Need another hint?
+Once you put it together, your query should look like this:
+
+db.listingsAndReviews.createIndex({name: 1})
+
+Checkpoint 3 Passed
+3.
+Query the listingsAndReviews collection again for the restaurant with the name of "Osaka Japanese Fusion". Use the .explain() method with the string "executionStats" as an argument to see 
+the performance of your query using your newly created index. Do you notice any difference in the query’s performance?
+
+
+Hint
+You can use the .find() method to search for a document in a collection. Be sure the chain the .explain() method to your query to see information about its execution. In particular, take 
+note of the nReturned and totalDocsExamined fields.
+
+Need another hint?
+Once you put it together, your query should look like this:
+
+db.listingsAndReviews.find({ name: 'Osaka Japanese Fusion' }).explain('executionStats')
+
+mongosh
+-------
+test> use restaurants
+switched to db restaurants
+restaurants> db.listingsAndReviews.find({ name: 'Osaka Japanese Fusion' }).explain('executionStats');
+{
+  explainVersion: '1',
+  queryPlanner: {
+    namespace: 'restaurants.listingsAndReviews',
+    indexFilterSet: false,
+    parsedQuery: { name: { '$eq': 'Osaka Japanese Fusion' } },
+    maxIndexedOrSolutionsReached: false,
+    maxIndexedAndSolutionsReached: false,
+    maxScansToExplodeReached: false,
+    winningPlan: {
+      stage: 'FETCH',
+      inputStage: {
+        stage: 'IXSCAN',
+        keyPattern: { name: 1 },
+        indexName: 'name_1',
+        isMultiKey: false,
+        multiKeyPaths: { name: [] },
+        isUnique: false,
+        isSparse: false,
+        isPartial: false,
+        indexVersion: 2,
+        direction: 'forward',
+        indexBounds: {
+          name: [ '["Osaka Japanese Fusion", "Osaka Japanese Fusion"]' ]
+        }
+      }
+    },
+    rejectedPlans: []
+  },
+  executionStats: {
+    executionSuccess: true,
+    nReturned: 1,
+    executionTimeMillis: 0,
+    totalKeysExamined: 1,
+    totalDocsExamined: 1,
+    executionStages: {
+      stage: 'FETCH',
+      nReturned: 1,
+      executionTimeMillisEstimate: 0,
+      works: 2,
+      advanced: 1,
+      needTime: 0,
+      needYield: 0,
+      saveState: 0,
+      restoreState: 0,
+      isEOF: 1,
+      docsExamined: 1,
+      alreadyHasObj: 0,
+      inputStage: {
+        stage: 'IXSCAN',
+        nReturned: 1,
+        executionTimeMillisEstimate: 0,
+        works: 2,
+        advanced: 1,
+        needTime: 0,
+        needYield: 0,
+        saveState: 0,
+        restoreState: 0,
+        isEOF: 1,
+        keyPattern: { name: 1 },
+        indexName: 'name_1',
+        isMultiKey: false,
+        multiKeyPaths: { name: [] },
+        isUnique: false,
+        isSparse: false,
+        isPartial: false,
+        indexVersion: 2,
+        direction: 'forward',
+        indexBounds: {
+          name: [ '["Osaka Japanese Fusion", "Osaka Japanese Fusion"]' ]
+        },
+        keysExamined: 1,
+        seeks: 1,
+        dupsTested: 0,
+        dupsDropped: 0
+      }
+    }
+  },
+  command: {
+    find: 'listingsAndReviews',
+    filter: { name: 'Osaka Japanese Fusion' },
+    '$db': 'restaurants'
+  },
+  serverInfo: {
+    host: '76bceda8ac1b',
+    port: 27017,
+    version: '5.0.9',
+    gitVersion: '6f7dae919422dcd7f4892c10ff20cdc721ad00e6'
+  },
+  serverParameters: {
+    internalQueryFacetBufferSizeBytes: 104857600,
+    internalQueryFacetMaxOutputDocSizeBytes: 104857600,
+    internalLookupStageIntermediateDocumentMaxSizeBytes: 104857600,
+    internalDocumentSourceGroupMaxMemoryBytes: 104857600,
+    internalQueryMaxBlockingSortMemoryUsageBytes: 104857600,
+    internalQueryProhibitBlockingMergeOnMongoS: 0,
+    internalQueryMaxAddToSetBytes: 104857600,
+    internalDocumentSourceSetWindowFieldsMaxMemoryBytes: 104857600
+  },
+  ok: 1
+}
+restaurants> db.listingsAndReviews.createIndex({ name: 1 });
+name_1
+restaurants> db.listingsAndReviews.find({ name: 'Osaka Japanese Fusion' }).explain('executionStats');
+{
+  explainVersion: '1',
+  queryPlanner: {
+    namespace: 'restaurants.listingsAndReviews',
+    indexFilterSet: false,
+    parsedQuery: { name: { '$eq': 'Osaka Japanese Fusion' } },
+    maxIndexedOrSolutionsReached: false,
+    maxIndexedAndSolutionsReached: false,
+    maxScansToExplodeReached: false,
+    winningPlan: {
+      stage: 'FETCH',
+      inputStage: {
+        stage: 'IXSCAN',
+        keyPattern: { name: 1 },
+        indexName: 'name_1',
+        isMultiKey: false,
+        multiKeyPaths: { name: [] },
+        isUnique: false,
+        isSparse: false,
+        isPartial: false,
+        indexVersion: 2,
+        direction: 'forward',
+        indexBounds: {
+          name: [ '["Osaka Japanese Fusion", "Osaka Japanese Fusion"]' ]
+        }
+      }
+    },
+    rejectedPlans: []
+  },
+  executionStats: {
+    executionSuccess: true,
+    nReturned: 1,
+    executionTimeMillis: 0,
+    totalKeysExamined: 1,
+    totalDocsExamined: 1,
+    executionStages: {
+      stage: 'FETCH',
+      nReturned: 1,
+      executionTimeMillisEstimate: 0,
+      works: 2,
+      advanced: 1,
+      needTime: 0,
+      needYield: 0,
+      saveState: 0,
+      restoreState: 0,
+      isEOF: 1,
+      docsExamined: 1,
+      alreadyHasObj: 0,
+      inputStage: {
+        stage: 'IXSCAN',
+        nReturned: 1,
+        executionTimeMillisEstimate: 0,
+        works: 2,
+        advanced: 1,
+        needTime: 0,
+        needYield: 0,
+        saveState: 0,
+        restoreState: 0,
+        isEOF: 1,
+        keyPattern: { name: 1 },
+        indexName: 'name_1',
+        isMultiKey: false,
+        multiKeyPaths: { name: [] },
+        isUnique: false,
+        isSparse: false,
+        isPartial: false,
+        indexVersion: 2,
+        direction: 'forward',
+        indexBounds: {
+          name: [ '["Osaka Japanese Fusion", "Osaka Japanese Fusion"]' ]
+        },
+        keysExamined: 1,
+        seeks: 1,
+        dupsTested: 0,
+        dupsDropped: 0
+      }
+    }
+  },
+  command: {
+    find: 'listingsAndReviews',
+    filter: { name: 'Osaka Japanese Fusion' },
+    '$db': 'restaurants'
+  },
+  serverInfo: {
+    host: '76bceda8ac1b',
+    port: 27017,
+    version: '5.0.9',
+    gitVersion: '6f7dae919422dcd7f4892c10ff20cdc721ad00e6'
+  },
+  serverParameters: {
+    internalQueryFacetBufferSizeBytes: 104857600,
+    internalQueryFacetMaxOutputDocSizeBytes: 104857600,
+    internalLookupStageIntermediateDocumentMaxSizeBytes: 104857600,
+    internalDocumentSourceGroupMaxMemoryBytes: 104857600,
+    internalQueryMaxBlockingSortMemoryUsageBytes: 104857600,
+    internalQueryProhibitBlockingMergeOnMongoS: 0,
+    internalQueryMaxAddToSetBytes: 104857600,
+    internalDocumentSourceSetWindowFieldsMaxMemoryBytes: 104857600
+  },
+  ok: 1
+}
+
+------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
