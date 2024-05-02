@@ -1,0 +1,449 @@
+# PROJECT THE ARTIST'S BARGAIN
+------------------------------
+
+* The Artist's Bargain
+----------------------
+Your online painting business has been doing well recently, but your creativity overwhelmed you! Now, there are many paintings in your storage that need to be added for sale on your 
+website. It used to be easy enough to manually track which paintings were sold on paper, but now it’s time to upgrade your inventory tracking to keep up with demand.
+
+You’ve found MongoDB to be a great solution! In this project, you’ll be managing your paintings inventory through MongoDB commands to handle different situations such as:
+
+	. Adding new paintings to the inventory
+
+	. Editing existing paintings in the inventory
+
+	. Deleting existing paintings from the inventory
+
+If you get stuck during this project or would like to see an experienced developer work through it, click “Get Unstuck” to see a project walkthrough video.
+
+* Tasks
+-------
+0/8 complete
+Mark the tasks as complete by checking them off
+
+* Adding to the Painting Inventory
+----------------------------------
+
+1. It turns out that your partner has started adding paintings to the inventory already.
+
+Let’s start by checking what documents are in the paintings collection inside the inventory database. There should be 25 paintings already in the database. Be sure to switch to the 
+correct database before finding the existing painting documents.
+
+
+Hint
+To select a database, enter the command use <database>.
+
+Once in a database, to view all the collections, use show collections.
+
+If you want to view all of the documents in a collection, you can use db.<collection>.find().
+
+test> use inventory
+switched to db inventory
+inventory> show collections
+paintings
+inventory> db.paintings.find();
+[
+  {
+    _id: ObjectId("62bb67a7afb6624199006a02"),
+    inv_id: 1,
+    price: 19.99,
+    size: '8x8',
+    style: 'abstract',
+    status: 'listed'
+  },
+  {
+    _id: ObjectId("62bb67a7afb6624199006a03"),
+    inv_id: 2,
+    price: 24.99,
+    size: '8x10',
+    style: 'realism',
+    status: 'listed'
+  },
+  {
+    _id: ObjectId("62bb67a7afb6624199006a04"),
+    inv_id: 3,
+    price: 9.99,
+    size: '5x5',
+    style: 'surrealism',
+    status: 'listed'
+  },
+  {
+    _id: ObjectId("62bb67a7afb6624199006a05"),
+    inv_id: 4,
+    price: 29.99,
+    size: '15x10',
+    style: 'abstract',
+    status: 'listed'
+  },
+  {
+    _id: ObjectId("62bb67a7afb6624199006a06"),
+    inv_id: 5,
+    price: 79.99,
+    size: '20x20',
+    style: 'pop art',
+    status: 'completed'
+  }
+]
+Type "it" for more
+inventory> it
+[
+  {
+    _id: ObjectId("62bb67a7afb6624199006a07"),
+    inv_id: 6,
+    price: 19.99,
+    size: '12x12',
+    style: 'realism',
+    status: 'completed'
+  },
+  {
+    _id: ObjectId("62bb67a7afb6624199006a08"),
+    inv_id: 7,
+    price: 9.99,
+    size: '5x10',
+    style: 'abstract',
+    status: 'listed'
+  },
+  {
+    _id: ObjectId("62bb67a7afb6624199006a09"),
+    inv_id: 8,
+    price: 19.99,
+    size: '10x10',
+    style: 'pop art',
+    status: 'completed'
+  },
+  {
+    _id: ObjectId("62bb67a7afb6624199006a0a"),
+    inv_id: 9,
+    price: 8.99,
+    size: '10x7',
+    style: 'realism',
+    status: 'listed'
+  },
+  {
+    _id: ObjectId("62bb67a7afb6624199006a0b"),
+    inv_id: 10,
+    price: 11.99,
+    size: '10x10',
+    style: 'pop art',
+    status: 'listed'
+  }
+]
+Type "it" for more
+inventory> it
+[
+  {
+    _id: ObjectId("62bb67a7afb6624199006a0c"),
+    inv_id: 11,
+    price: 59.99,
+    size: '20x15',
+    style: 'realism',
+    status: 'listed'
+  },
+  {
+    _id: ObjectId("62bb67a7afb6624199006a0d"),
+    inv_id: 12,
+    price: 0,
+    size: '10x10',
+    style: 'abstract',
+    status: 'listed'
+  },
+  {
+    _id: ObjectId("62bb67a7afb6624199006a0e"),
+    inv_id: 13,
+    price: 29.99,
+    size: '12x10',
+    style: 'pop art',
+    status: 'completed'
+  },
+  {
+    _id: ObjectId("62bb67a7afb6624199006a0f"),
+    inv_id: 14,
+    price: 15.99,
+    size: '6x8',
+    style: 'abstract',
+    status: 'listed'
+  },
+  {
+    _id: ObjectId("62bb67a7afb6624199006a10"),
+    inv_id: 15,
+    price: 19.99,
+    size: '10x10',
+    style: 'pop art',
+    status: 'listed'
+  }
+]
+Type "it" for more
+inventory> it
+[
+  {
+    _id: ObjectId("62bb67a7afb6624199006a11"),
+    inv_id: 16,
+    price: 8.99,
+    size: '5x5',
+    style: 'abstract',
+    status: 'listed'
+  },
+  {
+    _id: ObjectId("62bb67a7afb6624199006a12"),
+    inv_id: 17,
+    price: 19.99,
+    size: '10x10',
+    style: 'surrealism',
+    status: 'listed'
+  },
+  {
+    _id: ObjectId("62bb67a7afb6624199006a13"),
+    inv_id: 18,
+    price: 59.99,
+    size: '20x20',
+    style: 'pop art',
+    status: 'listed'
+  },
+  {
+    _id: ObjectId("62bb67a7afb6624199006a14"),
+    inv_id: 19,
+    price: 24.99,
+    size: '12x15',
+    style: 'abstract',
+    status: 'listed'
+  },
+  {
+    _id: ObjectId("62bb67a7afb6624199006a15"),
+    inv_id: 20,
+    price: 9.99,
+    size: '6x8',
+    style: 'surrealism',
+    status: 'listed'
+  }
+]
+Type "it" for more
+inventory> it
+[
+  {
+    _id: ObjectId("62bb67a7afb6624199006a16"),
+    inv_id: 21,
+    price: 12.99,
+    size: '10x7',
+    style: 'pop art',
+    status: 'listed'
+  },
+  {
+    _id: ObjectId("62bb67a7afb6624199006a17"),
+    inv_id: 22,
+    price: 19.99,
+    size: '10x10',
+    style: 'abstract',
+    status: 'listed'
+  },
+  {
+    _id: ObjectId("62bb67a7afb6624199006a18"),
+    inv_id: 23,
+    price: 79.99,
+    size: '25x30',
+    style: 'realism',
+    status: 'listed'
+  },
+  {
+    _id: ObjectId("62bb67a7afb6624199006a19"),
+    inv_id: 24,
+    price: 24.99,
+    size: '8x10',
+    style: 'abstract',
+    status: 'listed'
+  },
+  {
+    _id: ObjectId("62bb67a7afb6624199006a1a"),
+    inv_id: 25,
+    price: 11.99,
+    size: '6x8',
+    style: 'surrealism',
+    status: 'listed'
+  }
+]
+Type "it" for more
+inventory> it
+no cursor
+inventory> 
+(To exit, press Ctrl+C again or Ctrl+D or type .exit)
+inventory> 
+
+2. Now that you know what a painting document looks like, add one new painting to the database with the following fields:
+
+An inventory ID of 26
+A price of $59.99
+A size of 10 by 10 inches
+Using a pop art style
+With an order status of listed
+
+2.
+Now that you know what a painting document looks like, add one new painting to the database with the following fields:
+
+An inventory ID of 26
+A price of $59.99
+A size of 10 by 10 inches
+Using a pop art style
+With an order status of listed
+
+Hint
+To add a single document to a collection, you can use the .insertOne() method, which has the following syntax:
+
+db.<collection>.insertOne(<document>)
+
+When converting the above data to a document, it will take the form of:
+
+{
+  inv_id: 26,
+  price: 59.99,
+  size: '10x10',
+  style: 'pop art',
+  status: 'listed'
+}
+
+Need another hint?
+Your query should look as follows:
+
+db.paintings.insertOne({
+  inv_id: 26,
+  price: 59.99,
+  size: '10x10',
+  style: 'pop art',
+  status: 'listed'
+})
+
+inventory> db.paintings.insertOne( {inv_id: 25, price: 11.99, size: '6x8', style: 'surrealism', status: 'listed'} );
+{
+  acknowledged: true,
+  insertedId: ObjectId("663345df3f34231f1b1fc9fd")
+}
+
+3.
+Make sure that the painting document you just inserted with an inv_id of 26 is found in the paintings collection.
+
+
+Hint
+You can use the .find() method to search for a specific document. The syntax would look like this:
+
+db.<collection>.find({ <field>: <value> })
+
+Need another hint?
+Your query should look as follows:
+
+db.paintings.find({ inv_id: 26 })
+
+inventory> db.paintings.find({ inv_id: 26 });
+[
+  {
+    _id: ObjectId("663348153b474021f5c2cd6a"),
+    inv_id: 26,
+    price: 59.99,
+    size: '10x10',
+    style: 'pop art',
+    status: 'listed'
+  }
+]
+
+* Removing an Incorrect Entry
+-----------------------------
+4.
+Uh oh! Upon closer inspection, it turns out that your partner made a mistake when adding painting documents to the collection earlier. One of the paintings was listed as free! You need to delete the one painting document with a price of 0.
+
+
+Hint
+You can delete one document using the .deleteOne() method. The syntax looks like this:
+
+db.<collection>.deleteOne({ <field>: <value> })
+
+Need another hint?
+Your query should look as follows:
+
+db.paintings.deleteOne({ price: 0 })
+
+inventory> db.paintings.deleteOne({ price: 0 })
+{ acknowledged: true, deletedCount: 1 }
+
+5.
+Search the collection to ensure no results appear when searching for documents with a price of 0.
+
+
+Hint
+You can use the .find() method to search for documents. The syntax looks like this:
+
+db.<collection>.find({ <field>: <value> })
+
+The command will not output any results if there are no matching documents.
+
+Need another hint?
+Your query should look as follows:
+
+db.paintings.find({price: 0})
+
+inventory> db.paintings.find({ price: 0 });
+
+* Time for a Bargain
+--------------------
+6.
+To sell of some of your inventory, you decided to have an abstract art sale. It turns out that all of your abstract paintings have sold! You need to update the paintings collection to reflect the sold paintings.
+
+Update the status of all paintings with the style of "abstract" to be "sold". After running the command, check to make sure the documents changed.
+
+
+Hint
+To update a field of multiple documents at once, you can use the .updateMany() method combined with the $set operator. The syntax looks like this:
+
+db.<collection>.updateMany(
+  { <filter_field>: <value> },
+  { $set: { <update_field>: <value> }}
+)
+
+Need another hint?
+Your query should look as follows:
+
+db.paintings.updateMany(
+  { style: "abstract"},
+  { $set: { status: "sold" }}
+)
+
+inventory> db.paintings.updateMany({ style: "abstract"}, { $set: {status: "sold"}});
+{
+  acknowledged: true,
+  insertedId: null,
+  matchedCount: 8,
+  modifiedCount: 8,
+  upsertedCount: 0
+}
+
+7.
+Some of the older orders have already been shipped and completed. To make room for new painting documents, delete all of the documents which have a status of "completed".
+
+
+Hint
+You can use the .deleteMany() method to delete multiple documents from a collection. The syntax looks like this:
+
+db.<collection>.deleteMany({ <filter_field>: <value> });
+
+Need another hint?
+Your query should look as follows:
+
+db.paintings.deleteMany({ 
+  status: "completed"
+})
+
+inventory> db.paintings.deleteMany({ status: "completed" });
+{ acknowledged: true, deletedCount: 4 }
+
+8.
+Congratulations on finishing the project! You were able to manage an entire painting business in MongoDB.
+
+In this project, you:
+
+	. Performed queries using the .find() method.
+
+	. Added new documents using the .insertOne() method.
+
+	. Updated documents using the .updateMany() method.
+
+	. Deleted documents using the .deleteOne() and .deleteMany() methods.
+
+Examine all of the remaining paintings in the collection, and feel free to continue playing around with these collections to get even more practice.
+
+
