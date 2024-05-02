@@ -658,7 +658,46 @@ restaurants>
 
 ------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
+* Review
+--------
+1 min
+Great job! Let’s go over a quick summary of what we’ve learned about deleting in MongoDB:
 
+	. The .deleteOne() method deletes a single document from a collection. It accepts a filter document specifying which document to delete as the first parameter.
+
+	. The .deleteOne() method will only delete the first matching document in the collection.
+
+	. The .deleteMany() method deletes all matching documents from a collection. It accepts a filter document specifying which document to delete as the first parameter.
+
+	. The .replaceOne() method replaces an entire document from a collection. It takes in filtering criteria specifying the document to replace as the first parameter and a 
+	replacement document as the second one.
+
+	. The .replaceOne() method will only replace the first matching document in the collection.
+
+	. Since .replaceOne() replaces an entire document, only fields included in the second parameter will be present in the document after the operation executes.
+
+In addition to the syntax we’ve learned throughout this lesson, MongoDB offers us other syntax and commands that can be useful when deleting or replacing documents:
+
+	. The .findOneAndReplace() method is very similar to .replaceOne(). It replaces a document in a collection based on filter criteria, but instead of returning a document that 
+	acknowledges the operation, it returns either the original document or the replacement document.
+
+	. The .findOneAndDelete() method deletes a document, and returns the deleted document.
+
+Congrats! You’ve learned a lot in the past exercises. Now you can use your knowledge and experiment with the provided collection!
+
+* Instructions
+--------------
+We have provided you with the listingsAndReviews collection. Before moving on, spend some time experimenting with writing queries, using the syntax you learned throughout this lesson. If 
+you are up for a challenge, try any of the following tasks listed below. Remember to first connect to the restaurants database to access the listingsAndReviews collection. Good luck, and 
+click Up Next when you are ready to move on!
+
+Optional Tasks:
+
+	. Delete any restaurants that have received a "C" grade via the grades field. After all, we have to keep our standards high!
+
+	. Replace the cuisine of a restaurant of your choosing.
+
+	. Choose a restaurant with multiple grades of "A". Replace the document, so it no longer has a grades field but instead has a field named top_restaurant with the value of true.
 
 
 
