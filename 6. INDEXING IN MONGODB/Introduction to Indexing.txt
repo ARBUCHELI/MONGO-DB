@@ -694,6 +694,97 @@ restaurants>
 
 ------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
+* Multikey Index on Compound Fields
+-----------------------------------
+3 min
+Is it possible to create a compound multikey index in MongoDB? The answer is yes, with a very important caveat - only one of the indexed fields can have an array as its value.
+
+For example, suppose we had a document within a students collection with two fields with arrays as their values: sports and clubs.
+
+{ 
+  _id: ObjectId(...),
+  last_name: "Tapia",
+  first_name: "Joseph",
+  major: "architecture",
+  birth_year: 1988,
+  graduation_year: 2012 ,
+  sports: ["rowing", "boxing"],
+  clubs: [“Honor Society”, “Student Government”, “Yearbook Committee”]
+}
+
+A single compound index can not be created on both the sports and clubs fields. We could, however, successfully create a compound multikey index on sports or clubs along with any of the 
+other fields.
+
+For example, either of the following would successfully create a compound multikey index:
+
+db.students.createIndex({ sports: 1, major: 1 });
+db.students.createIndex({ clubs: -1, graduation_year: -1 });
+
+If we wanted to index both the sports and clubs fields, we’d have to create two separate indexes for them.
+
+Let’s practice creating a compound multikey index!
+
+* Instructions
+--------------
+Checkpoint 1 Passed
+1.
+Connect to the restaurants database. Inside the listingsAndReviews collection, create a multikey index with the fields cuisine, in ascending order, and grades, in descending order.
+
+
+Hint
+Remember to run the command use restaurants to access the listingsAndReviews collection. You can call the .createIndex() method on the listingsAndReviews collection to create a multikey 
+index.
+
+Need another hint?
+Provide 1 as a value to order the field values in ascending order and -1 for descending order.Once you put it together, your query should look like this:
+
+db.listingsAndReviews.createIndex({cuisine: 1, grades: -1})
+
+mongosh
+-------
+test> use restaurants
+switched to db restaurants
+restaurants> db.listingsAndReviews.createIndex({ cuisine: 1, grades: -1 });
+cuisine_1_grades_-1
+
+------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
