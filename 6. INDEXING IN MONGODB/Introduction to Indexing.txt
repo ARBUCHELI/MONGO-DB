@@ -426,6 +426,246 @@ restaurants> db.listingsAndReviews.find({ name: 'Osaka Japanese Fusion' }).expla
 
 ------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
+* Compound Indexes
+------------------
+10 min
+In addition to single field indexes, MongoDB gives us the ability to create compound indexes. Compound indexes contain references to multiple fields within a document and support queries 
+that match on multiple fields. Let’s have a look at the syntax for creating a compound index:
+
+db.<collection>.createIndex({ 
+  <field>: <type>, 
+  <field2>: <type>, 
+  …
+})
+
+Similar to single field indexes, MongoDB will scan our index for matching values, then return the corresponding documents. With compound indexes, the order of fields is important. To 
+understand why, let’s return to our example from the first exercise about the university president.
+
+Imagine that as president we wanted to plan reunions not just for students who studied abroad during a particular year, but also for students who studied abroad in a particular country. 
+We could create a compound index on two fields: study_abroad_nation and year_abroad, like so:
+
+db.students.createIndex({ 
+  study_abroad_nation: 1, 
+  year_abroad: -1 
+});
+
+This creates a single index that references two fields: study_abroad_nation in ascending, or alphabetical order, and year_abroad in descending, or reverse chronological order.
+
+Because of how the fields are ordered, references within this index will be sorted first by the study_abroad_nation field. Within each value of the study_abroad_nation field, references 
+will be sorted by the year_abroad field. This is an important consideration in determining how well our indexes will be able to support sort operations in our queries.
+
+Now that we’ve created this compound index, anytime we query on these two fields, MongoDB will automatically employ this index to support our search.
+
+The below query would be a use case for our compound index:
+
+db.students.find({ 
+  study_abroad_nation: "Brazil", 
+  year_abroad: 2012 
+});
+
+Compound indexes can also support queries on any prefix, or a beginning subset of the indexed fields. For example, consider the following compound index:
+
+db.students.createIndex({ 
+  study_abroad_nation: 1, 
+  year_abroad: -1, 
+  graduation_year: 1 
+});
+
+In addition to supporting a query that matches on the study_abroad_nation, year_abroad and graduation_year fields, this index would also be able to support queries on the following 
+fields:
+
+	. study_abroad_nation
+
+	. study_abroad_nation and year_abroad
+
+This index would not, however, be able to support queries on the following fields:
+
+	. year_abroad
+
+	. graduation_year
+
+	. year_abroad and graduation_year
+
+As each index must be updated as documents change, unnecessary indexes can affect the write speed to our database. Make sure to consider if a compound index would be more efficient than 
+creating multiple distinct single-field indexes to support your queries.
+
+Let’s practice creating and using compound indexes!
+
+* Instructions
+--------------
+Checkpoint 1 Passed
+1.
+We’ve realized that creating one compound index would be more efficient than two single field indexes. Using the same listingsAndReviews collection, create an index based on the fields 
+borough and cuisine so that the results would be in ascending order for borough and descending order for cuisine.
+
+
+Hint
+Remember to first run the command use restaurants to connect to the restaurants database. Make sure to append .createIndex() to the listingsAndReviews collection with the relevant 
+fields.
+
+Need another hint?
+Provide 1 as a value to order the index field in ascending order and -1 for descending order.
+
+Once you put it together, your query should look like this:
+
+db.listingsAndReviews.createIndex({borough: 1, cuisine: -1})
+
+Checkpoint 2 Failed, try again
+2.
+Using the new compound index, we want to query only Chinese restaurants with a restaurant_id greater than "42000000". Create a query that satisfies these parameters.
+
+
+Hint
+Make sure to use the .find() method to query the listingsAndReviews collection. Be sure to query on the cuisine and restaurant_id fields.
+
+Need another hint?
+Use the $gt operator to find restaurant_id values that are greater than "42000000".
+
+Once you put it together, your query should look like this:
+
+db.listingsAndReviews.find({ cuisine: "Chinese", restaurant_id: { $gt: "42000000" } })
+
+mongosh
+-------
+test> use restaurants
+switched to db restaurants
+restaurants> db.listingsAndReviews.createIndex({ borough: 1, cuisine: -1 });
+borough_1_cuisine_-1
+
+restaurants> db.listingsAndReviews.find({ cuisine: "Chinese", restaurant_id: { $gt: "42000000"}});
+[
+  {
+    _id: ObjectId("5eb3d669b31de5d588f484e0"),
+    address: {
+      building: '770',
+      coord: [ -74.00959999999999, 40.636179 ],
+      street: '59 Street',
+      zipcode: '11220'
+    },
+    borough: 'Brooklyn',
+    cuisine: 'Chinese',
+    grades: [
+      {
+        date: ISODate("2014-10-09T00:00:00.000Z"),
+        grade: 'Z',
+        score: 22
+      }
+    ],
+    name: 'D.C.Plzz Seafood',
+    restaurant_id: '50014008'
+  },
+  {
+    _id: ObjectId("5eb3d669b31de5d588f47b13"),
+    address: {
+      building: '40-75',
+      coord: [ -73.8682266, 40.7471902 ],
+      street: 'Junction Boulevard',
+      zipcode: '11368'
+    },
+    borough: 'Queens',
+    cuisine: 'Chinese',
+    grades: [
+      {
+        date: ISODate("2014-06-19T00:00:00.000Z"),
+        grade: 'A',
+        score: 8
+      },
+      {
+        date: ISODate("2014-01-14T00:00:00.000Z"),
+        grade: 'A',
+        score: 7
+      }
+    ],
+    name: 'May Chun Garden',
+    restaurant_id: '50005130'
+  },
+  {
+    _id: ObjectId("5eb3d669b31de5d588f47a2f"),
+    address: {
+      building: '2102',
+      coord: [ -73.8436674, 40.8562685 ],
+      street: 'Eastchester Road',
+      zipcode: '10461'
+    },
+    borough: 'Bronx',
+    cuisine: 'Chinese',
+    grades: [
+      {
+        date: ISODate("2014-07-16T00:00:00.000Z"),
+        grade: 'A',
+        score: 7
+      },
+      {
+        date: ISODate("2013-12-18T00:00:00.000Z"),
+        grade: 'A',
+        score: 10
+      }
+    ],
+    name: 'Golden China Pavilion',
+    restaurant_id: '50004482'
+  },
+  {
+    _id: ObjectId("5eb3d669b31de5d588f474c8"),
+    address: {
+      building: '41-28',
+      coord: [ -73.829437, 40.757178 ],
+      street: 'Main Street',
+      zipcode: '11355'
+    },
+    borough: 'Queens',
+    cuisine: 'Chinese',
+    grades: [
+      {
+        date: ISODate("2014-09-02T00:00:00.000Z"),
+        grade: 'A',
+        score: 10
+      },
+      {
+        date: ISODate("2014-04-03T00:00:00.000Z"),
+        grade: 'A',
+        score: 12
+      },
+      {
+        date: ISODate("2013-07-23T00:00:00.000Z"),
+        grade: 'A',
+        score: 10
+      }
+    ],
+    name: 'Super Snacks',
+    restaurant_id: '50001320'
+  }
+]
+restaurants> 
+
+------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
