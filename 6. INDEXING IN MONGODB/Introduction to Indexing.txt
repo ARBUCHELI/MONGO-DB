@@ -1,0 +1,134 @@
+# INTRODUCTION TO INDEXING
+--------------------------
+
+* Single Field Index
+--------------------
+8 min
+In MongoDB, indexes play an important role in making sure our database performs optimally. Recall, an index is a special data structure that stores a small portion of the collection’s 
+data in an easy-to-traverse form. We have already used indexes when we queried by the _id field since MongoDB creates a default index on the _id field for all our documents.
+
+However, we can also create our own custom index by using the .createIndex() method. The syntax looks like this:
+
+db.<collection>.createIndex({ <keys>, <options>, <commitQuorum>)}
+
+We have three main parameters:
+
+	. keys: A document that contains the field and value pairs where the field is the index key and the value describes the type of index for that field.
+
+	. options: A document of various optional options that control index creation.
+
+	. commitQuoroum: A more advanced parameter that gives control over replica sets. We won’t be working with this parameter in this lesson.
+
+In this lesson, we will mostly work with the keys parameter. To learn more about the various other parameters, visit the official documentation. That said, our syntax will look closer to 
+this:
+
+db.<collection>.createIndex({ <field>: <type> });
+
+For the keys parameters, we must pass a document with field-type pairs. Fields can be assigned a value of 1 or -1. A value of 1 will sort the index in ascending order, while a value of -1 
+would sort the index in descending order. If the field contains a string value, 1 will sort the documents in alphabetical order (A-Z), and -1 will sort the documents in reverse order 
+(Z-A).
+
+To see .createIndex() in action, imagine as a university president, we have a collection of every student within your database, called students. A sample document from the students 
+collection might look like this:
+
+{ 
+  _id: ObjectId(...),
+  last_name: "Tapia",
+  first_name: "Joseph",
+  major: "architecture",
+  birth_year: 1988,
+  graduation_year: 2012,
+  year_abroad: 2011
+}
+
+Perhaps we are organizing reunions for students who studied abroad and found ourselves frequently searching the database for students who studied internationally during a particular year. 
+Rather than repeatedly querying the entire students collection by the year_abroad field, it would be beneficial to create an index based on this particular field, also known as a single 
+field index. We could run the following command:
+
+db.students.createIndex({ year_abroad: 1 });
+
+The above command would create an index on all the documents in the student’s collection based on the year_abroad field, sorted in ascending order.
+
+We can run a query on the indexed field to utilize the indexed year_abroad field. Here’s an example query that uses this new index to search for students who have studied abroad from 2020 
+onward:
+
+db.students.find({ year_abroad: { $gt: 2019 }});
+
+Creating a single field index can save us significant time in our query since we’d only be scanning the index for ordered values of the year_abroad field rather than browsing the entire 
+collection and examining every document.
+
+Let’s practice creating indexes using the .createIndex() method!
+
+* Instructions
+--------------
+Checkpoint 1 Passed
+1.
+We want to create an index that arranges the restaurants according to boroughs. Connect to the restaurants database, and then using the listingsAndReviews collection, create an index 
+based on the single field borough so that the results will be in alphabetical order.
+
+
+Hint
+Make sure to call the .createIndex() method on the listingsAndReviews collection using the following syntax. As an argument, provide a document containing the borough field passed in as 
+an argument. Assign 1 to the borough field to order the index in ascending order.
+
+db.<collection>.createIndex({ <field>: <1 or -1> })
+
+Need another hint?
+Once you put it together, your query should look like this:
+
+db.listingsAndReviews.createIndex({borough: 1})
+
+Checkpoint 2 Passed
+2.
+Now we want to create an index that lists the different types of cuisines. Create an index based on the single field cuisine so that the index references will be organized in reverse 
+alphabetical order.
+
+
+Hint
+Remember you can use the .createIndex() method with the following syntax:
+
+db.<collection>.createIndex({ <field>: <1 or -1> })
+
+Need another hint?
+Remember to assign a value of -1 to the cuisine field to organize the index in reverse alphabetical order. Once you put it together, your query should look like this:
+
+mongosh
+-------
+test> use restaurants
+switched to db restaurants
+restaurants> db.listingsAndReviews.createIndex({ borough: 1} );
+borough_1
+restaurants> db.listingsAndReviews.createIndex({ cuisine: -1 });
+cuisine_-1
+
+------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
