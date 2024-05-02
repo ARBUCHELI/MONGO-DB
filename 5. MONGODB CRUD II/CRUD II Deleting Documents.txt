@@ -469,6 +469,228 @@ restaurants>
 
 ------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
+* Replacing a Document
+----------------------
+7 min
+We might encounter situations where we need to delete a document and immediately replace it with another one. We could achieve this by running two separate methods, .deleteOne(), then 
+.insertOne(). Fortunately, MongoDB provides us with a single method, .replaceOne(), that can both delete and insert all at once!
+
+The .replaceOne() method replaces the first document in a collection that matches the given filter. The syntax for this method looks as follows:
+
+db.<collection>.replaceOne(
+  <filter>, 
+  <replacement>, 
+  <options>
+);
+
+Note in the syntax above that the .replaceOne() method takes three arguments:
+
+	. filter: A document that provides selection criteria for the document to replace.
+
+	. replacement: The replacement document.
+
+	. options: A document where we can include optional fields to provide more specifications to our operation, such as upsert.
+
+The replacement document can contain a subset of fields of the original document or entirely unique fields. To see it in action, consider a collection named employees with the following 
+documents:
+
+{
+  _id: ObjectId(...),
+  name: "Rohit Kohli",
+  department: "Customer Analytics"
+  position: "Senior Software Engineer"
+},
+{
+  _id: ObjectId(...),
+  name: "Rin Paterson",
+  department: "People Operations",
+  position: "Head of People Operations"
+}
+
+Imagine "Rohit Kohli" leaves the company. We still want to store their name, and update their position to "N/A" but no longer need a department field and value. We’d then need to replace 
+Rohit’s current document with a new document that only contains two fields: name, and position. We can accomplish this with .replaceOne():
+
+db.employees.replaceOne(
+  { name: "Rhoit Kohli" }, 
+  { name: "Rohit Kohli", position: "N/A" }
+);
+
+If successful, this would produce the following output:
+
+{
+  acknowledged: true,
+  insertedId: null,
+  matchedCount: 1,
+  modifiedCount: 1,
+  upsertedCount: 0
+}
+
+After running this command, we’d be left with the following collection:
+
+{
+  _id: ObjectId(...),
+  name: "Rohit Kohli",
+  position: "N/A"
+},
+{
+  _id: ObjectId(...),
+  name: "Gary Paterson",
+  department: "HR",
+  position: "Head of Human Resources"
+}
+
+Notice how the other fields were completely removed. This is the key difference between .replaceOne() and .updateOne(). Whereas .updateOne() updates specific fields based on the update 
+modifiers provided, .replaceOne() replaces the entire document and will only include fields specified in the <replacement> parameter.
+
+Now let’s practice what we’ve learned about .replaceOne() with the following exercises.
+
+* Instructions
+--------------
+Checkpoint 1 Passed
+1.
+Connect to the restaurants database. Then, using the listingsAndReviews collection, query for all the documents with the name "Tasty House".
+
+
+Hint
+Be sure to run use restaurants first to connect to the restaurants database. Use the .find() method to query your collection for documents with a name field with the value of 
+"Tasty House".
+
+Need another hint?
+Your query should look as follows:
+db.listingsAndReviews.find({ name: "Tasty House" })
+
+Checkpoint 2 Passed
+2.
+Unfortunately the restaurant has recently shut down. Replace the document with the following information:
+
+{
+  name: "Tasty House",
+  shut_down: true
+}
+
+
+Hint
+Use the .replaceOne() method to replace a document in the listingsAndReviews collection. Make sure to include the name field in the filter document, and the name and shut_down fields in 
+the replacement document.
+
+Need another hint?
+Your query should look as follows:
+db.listingsAndReviews.replaceOne({ name: "Tasty House" }, { name: "Tasty House", shut_down: true })
+
+Checkpoint 3 Passed
+3.
+Query the listingsAndReviews collection again for all the documents with the name "Tasty House" to confirm our document changed and the restaurant was successfully marked as shut down.
+
+
+Hint
+Be sure to run use restaurants first to connect to the restaurants database. Use the .find() method to query your collection for documents with a name field with the value of 
+"Tasty House".
+
+Need another hint?
+Your query should look as follows:
+db.listingsAndReviews.find({ name: "Tasty House" })
+
+mongosh
+-------
+test> use restaurants
+switched to db restaurants
+restaurants> db.listingsAndReviews.find({ name: "Tasty House" });
+[
+  {
+    _id: ObjectId("5eb3d669b31de5d588f45c87"),
+    address: {
+      building: '253',
+      coord: [ -73.97469099999999, 40.5970163 ],
+      street: 'Avenue U',
+      zipcode: '11223'
+    },
+    borough: 'Brooklyn',
+    cuisine: 'Chinese',
+    grades: [
+      {
+        date: ISODate("2014-06-09T00:00:00.000Z"),
+        grade: 'A',
+        score: 12
+      },
+      {
+        date: ISODate("2013-10-31T00:00:00.000Z"),
+        grade: 'B',
+        score: 15
+      },
+      {
+        date: ISODate("2012-09-19T00:00:00.000Z"),
+        grade: 'A',
+        score: 13
+      },
+      {
+        date: ISODate("2012-04-05T00:00:00.000Z"),
+        grade: 'A',
+        score: 5
+      },
+      {
+        date: ISODate("2011-09-20T00:00:00.000Z"),
+        grade: 'A',
+        score: 11
+      }
+    ],
+    name: 'Tasty House',
+    restaurant_id: '41567588'
+  }
+]
+
+restaurants> db.listingsAndReviews.replaceOne({ name: "Tasty House"}, { name: "Tasty House", shut_down: true });
+{
+  acknowledged: true,
+  insertedId: null,
+  matchedCount: 1,
+  modifiedCount: 1,
+  upsertedCount: 0
+}
+restaurants> db.listingsAndReviews.find({ name: "Tasty House" });
+[
+  {
+    _id: ObjectId("5eb3d669b31de5d588f45c87"),
+    name: 'Tasty House',
+    shut_down: true
+  }
+]
+restaurants>
+
+------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
