@@ -1,0 +1,597 @@
+# PROJECT - MOVIE STORIAN
+-------------------------
+
+* Movie Historian
+-----------------
+You’ve just been hired by a cinema museum to be their chief historian! Among your responsibilities will be cataloging their large database of films. Fortunately, you’ve found MongoDB to 
+be the ideal solution for these tasks.
+
+In this project, you will be using MongoDB commands to accomplish the following:
+
+	. Create single-field, compound, and multikey indexes of films to make your searches faster and more convenient.
+
+	. Delete indexes that have outlived their usefulness to save on your computer’s bandwidth and processing power.
+
+If you get stuck during this project or would like to see an experienced developer work through it, click “Get Unstuck” to see a project walkthrough video.
+
+* Indexing Movies By Year
+-------------------------
+1.
+As the newly-hired chief historian, the cinema museum wants you to gather information on recently released films. First, you’ll want to make sure to access the correct database by typing 
+use mflix. Then using the movies collection, create an index of movies based on the year field in descending order.
+
+
+Hint
+Be sure to run the command use mflix first to access the movies collection. Then use the .createIndex() method on the movies collection.
+
+As an argument, pass in a document that specifies the year field. Assign it a value of -1 to sort the documents in descending order.
+
+Need another hint?
+Your query should look as follows:
+
+db.movies.createIndex({year: -1})
+
+test> use mflix;
+switched to db mflix
+mflix> db.movies.createIndex({ year: -1 });
+year_-1
+
+2.
+Your director has just informed you that the museum wants to open an exhibit on films from the current millennium. Lucky for you, your newly-created index is primed to handle such a task. 
+Use your index to find movies that came out from 2000 onward.
+
+
+Hint
+Use the .find() method on the movies collection to search for movies whose year is greater than or equal to 2000.
+
+Need another hint?
+Your query should look as follows:
+
+db.movies.find({year: {$gte: 2000}})
+
+mflix> db.movies.find({ year: { $gte: 2000}});
+[
+  {
+    _id: ObjectId("573a13a5f29313caabd13ad1"),
+    plot: 'A massacre survivor (A.J. Cook) studies serial killers under a famous expert (Bruce Payne), but her classmates soon start dying at the hands of a Jack the Ripper copycat.',
+    genres: [ 'Horror', 'Thriller' ],
+    runtime: 114,
+    rated: 'R',
+    cast: [ 'A.J. Cook', 'Bruce Payne', 'Ryan Northcott', 'Claire Keim' ],
+    num_mflix_comments: 0,
+    poster: 'https://m.media-amazon.com/images/M/MV5BMTk0ODU2OTY2M15BMl5BanBnXkFtZTcwMzQ5MDQyMg@@._V1_SY1000_SX677_AL_.jpg',
+    title: 'Ripper',
+    fullplot: 'A massacre survivor (A.J. Cook) studies serial killers under a famous expert (Bruce Payne), but her classmates soon start dying at the hands of a Jack the Ripper copycat.',
+    languages: [ 'English' ],
+    released: ISODate("2002-01-29T00:00:00.000Z"),
+    directors: [ 'John Eyres' ],
+    writers: [
+      'John A. Curtis (story)',
+      'Evan Tylor (story)',
+      'Pat Bermel (screenplay)'
+    ],
+    awards: { wins: 0, nominations: 1, text: '1 nomination.' },
+    lastupdated: '2015-09-06 00:55:10.430000000',
+    year: 2001,
+    imdb: { rating: 4.6, votes: 2318, id: 268579 },
+    countries: [ 'Canada', 'UK' ],
+    type: 'movie',
+    tomatoes: {
+      viewer: { rating: 3.1, numReviews: 198, meter: 21 },
+      dvd: ISODate("2002-01-15T00:00:00.000Z"),
+      production: 'LionsGate Entertainment',
+      lastUpdated: ISODate("2015-07-17T19:27:51.000Z")
+    }
+  },
+  {
+    _id: ObjectId("573a13a7f29313caabd1bf58"),
+    fullplot: "After Rahul's white pop-star fiancèe dies in a bizarre levitation accident his mother insists he find another girl as soon as possible, preferably a Hindi one. As she backs this up by postponing his sister's wedding until he does so, he feels forced to act, the more so as he knows his sister is pregnant. But it's a pretty tall order for an Indian living in Ontario, so when he meets striking escort Sunita who can 'be whatever you want me to be' he hatches a scheme to pass her off as his new betrothed. Things get complicated when his family start to take to her and he realises his own feelings are becoming rather stronger than that.",
+    imdb: { rating: 6, votes: 2210, id: 303785 },
+    year: 2002,
+    plot: "After Rahul's white pop-star fiancèe dies in a bizarre levitation accident his mother insists he find another girl as soon as possible, preferably a Hindi one. As she backs this up by ...",
+    genres: [ 'Romance', 'Comedy', 'Drama' ],
+    rated: 'PG-13',
+    metacritic: 35,
+    title: 'Bollywood/Hollywood',
+    lastupdated: '2015-08-30 00:05:08.977000000',
+    languages: [ 'English', 'Hindi', 'Spanish' ],
+    writers: [ 'Deepa Mehta' ],
+    type: 'movie',
+    tomatoes: {
+      website: 'http://www.bollywoodhollywoodmovie.com',
+      viewer: { rating: 3.2, numReviews: 6228, meter: 58 },
+      dvd: ISODate("2005-08-23T00:00:00.000Z"),
+      critic: { rating: 5, numReviews: 45, meter: 40 },
+      lastUpdated: ISODate("2015-09-11T17:23:05.000Z"),
+      rotten: 27,
+      production: 'Cine Bella',
+      fresh: 18
+    },
+    poster: 'https://m.media-amazon.com/images/M/MV5BNWFjMTBhOGEtYTEzZi00MGY3LWFmNWYtZjhjM2ZiYWQ5MWY3XkEyXkFqcGdeQXVyNTM0NTU5Mg@@._V1_SY1000_SX677_AL_.jpg',
+    num_mflix_comments: 1,
+    released: ISODate("2002-10-25T00:00:00.000Z"),
+    awards: { wins: 3, nominations: 8, text: '3 wins & 8 nominations.' },
+    countries: [ 'Canada' ],
+    cast: [
+      'Rahul Khanna',
+      'Lisa Ray',
+      'Moushumi Chatterjee',
+      'Dina Pathak'
+    ],
+    directors: [ 'Deepa Mehta' ],
+    runtime: 105
+  },
+  {
+    _id: ObjectId("573a13a4f29313caabd128a0"),
+    fullplot: 'Molly Gunn, the freewheeling daughter of a deceased rock legend, is forced to get a job when her manager steals her money. As nanny for precocious Ray, the oft ignored daughter of a music executive, she learns what it means to be an adult while teaching Ray how to be a child.',
+    imdb: { rating: 6.1, votes: 27280, id: 263757 },
+    year: 2003,
+    plot: 'A grown-up woman, who kept her childish instincts and behavior, starts working as a nanny of a 8-year-old girl, who actually acts like an adult. But in the end everything turns to its right places.',
+    genres: [ 'Comedy', 'Drama', 'Romance' ],
+    rated: 'PG-13',
+    metacritic: 33,
+    title: 'Uptown Girls',
+    lastupdated: '2015-09-15 02:50:32.527000000',
+    languages: [ 'English' ],
+    writers: [
+      'Julia Dahl (screenplay)',
+      'Mo Ogrodnik (screenplay)',
+      'Lisa Davidowitz (screenplay)',
+      'Allison Jacobs (story)'
+    ],
+    type: 'movie',
+    tomatoes: {
+      website: 'http://www.mgm.com/uptowngirls',
+      viewer: { rating: 3.1, numReviews: 369465, meter: 60 },
+      dvd: ISODate("2004-01-06T00:00:00.000Z"),
+      critic: { rating: 3.8, numReviews: 111, meter: 14 },
+      boxOffice: '$36.9M',
+      consensus: 'With two obnoxious lead characters and an uneven screenplay, Uptown Girls fails to charm.',
+      rotten: 96,
+      production: 'Metro-Goldwyn-Mayer',
+      lastUpdated: ISODate("2015-08-24T18:19:05.000Z"),
+      fresh: 15
+    },
+    poster: 'https://m.media-amazon.com/images/M/MV5BODk0ODI2MTk1N15BMl5BanBnXkFtZTcwODg3Mjg3NA@@._V1_SY1000_SX677_AL_.jpg',
+    num_mflix_comments: 1,
+    released: ISODate("2003-08-15T00:00:00.000Z"),
+    awards: { wins: 0, nominations: 1, text: '1 nomination.' },
+    countries: [ 'USA' ],
+    cast: [
+      'Brittany Murphy',
+      'Dakota Fanning',
+      'Marley Shelton',
+      'Donald Faison'
+    ],
+    directors: [ 'Boaz Yakin' ],
+    runtime: 92
+  },
+  {
+    _id: ObjectId("573a13a9f29313caabd1eaf2"),
+    plot: 'Rusty (Hatosy) starts to pursue a path to a more meaningful life, thanks to his connection to Bob (Goldblum), the boyfriend of his mother, Mary (Lynch). His new take on life causes friction with his best friend, Dallas (Cann), and both men find their friendship pushed to its breaking point, causing them to make life-changing decisions.',
+    genres: [ 'Drama' ],
+    runtime: 100,
+    metacritic: 55,
+    rated: 'R',
+    cast: [ 'Scott Caan', 'Jeff Goldblum', 'Shawn Hatosy', 'Kelly Lynch' ],
+    poster: 'https://m.media-amazon.com/images/M/MV5BMTIzMTkyMjQ3MV5BMl5BanBnXkFtZTcwMjI3ODgyMQ@@._V1_SY1000_SX677_AL_.jpg',
+    title: 'Dallas 362',
+    fullplot: 'Rusty (Hatosy) starts to pursue a path to a more meaningful life, thanks to his connection to Bob (Goldblum), the boyfriend of his mother, Mary (Lynch). His new take on life causes friction with his best friend, Dallas (Cann), and both men find their friendship pushed to its breaking point, causing them to make life-changing decisions.',
+    languages: [ 'English' ],
+    released: ISODate("2003-06-14T00:00:00.000Z"),
+    directors: [ 'Scott Caan' ],
+    writers: [ 'Scott Caan' ],
+    awards: { wins: 1, nominations: 0, text: '1 win.' },
+    lastupdated: '2015-09-14 07:21:13.810000000',
+    year: 2003,
+    imdb: { rating: 6.2, votes: 1035, id: 315459 },
+    countries: [ 'USA' ],
+    type: 'movie',
+    tomatoes: {
+      website: 'http://www.dallas362.net',
+      viewer: { rating: 3.2, numReviews: 1343, meter: 60 },
+      dvd: ISODate("2005-08-09T00:00:00.000Z"),
+      critic: { rating: 5.6, numReviews: 17, meter: 53 },
+      lastUpdated: ISODate("2015-09-14T19:00:50.000Z"),
+      rotten: 8,
+      production: 'ThinkFilm',
+      fresh: 9
+    },
+    num_mflix_comments: 0
+  },
+  {
+    _id: ObjectId("573a13aef29313caabd2d7d1"),
+    plot: 'Littlefoot has been on many adventures before, but in this new edition to the Land Before Time series, the next adventure may change his life...forever.',
+    genres: [ 'Animation', 'Adventure', 'Family' ],
+    runtime: 84,
+    rated: 'G',
+    cast: [ 'John Ingle', 'Alec Medlock', 'Kenneth Mars', 'Miriam Flynn' ],
+    num_mflix_comments: 0,
+    poster: 'https://m.media-amazon.com/images/M/MV5BNTZmNGM2Y2MtZTU0ZC00OWQ4LWE0YWMtMjQ4YjAyMjRmYjZiXkEyXkFqcGdeQXVyNDgyODgxNjE@._V1_SY1000_SX677_AL_.jpg',
+    title: 'The Land Before Time X: The Great Longneck Migration',
+    fullplot: 'A bedtime story leads Littlefoot and his grandparents on a journey to a new land, where Littlefoot discovers someone who vanished before he was born: his father! Now Littlefoot must decide between two worlds. Will he leave to be with his friends in the Great Valley, or stay behind and start a new life with his father? This is the decision that could forever change The Land Before Time saga.',
+    languages: [ 'English' ],
+    released: ISODate("2003-12-02T00:00:00.000Z"),
+    directors: [ 'Charles Grosvenor' ],
+    writers: [
+      'John Loy (screenplay)',
+      'Judy Freudberg (characters)',
+      'Tony Geiss (characters)'
+    ],
+    awards: { wins: 0, nominations: 2, text: '2 nominations.' },
+    lastupdated: '2015-08-24 00:49:05.760000000',
+    year: 2003,
+    imdb: { rating: 6.1, votes: 1432, id: 378230 },
+    countries: [ 'USA' ],
+    type: 'movie'
+  }
+]
+Type "it" for more
+
+* Indexing Movies By Length And Year
+------------------------------------
+3.
+The museum wants to showcase multiple short films that can be quickly viewed to encourage faster foot-traffic through the museum’s various viewing galleries. As a result, the director wants you to find the shortest films in order to curate a rotation of selected short films. Create a compound index that is not only based on year in descending order but also on runtime in ascending order.
+
+
+Hint
+Use the .createIndex() method on the movies collection. Assign a value of 1 to sort the references in ascending order and -1 to sort the references in descending order.
+
+Need another hint?
+Your query should look as follows:
+
+mflix> db.movies.createIndex({ year: -1, runtime: 1});
+year_-1_runtime_1
+
+4.
+Use the index you just created to find movies that came out from 2000 onward and are shorter than 30 minutes.
+
+
+Hint
+Call the .find() method on the movies collection to search for movies whose year is 2000 or greater and whose runtime is less than 30.
+
+Need another hint?
+Your query should look as follows:
+
+db.movies.find({ year: { $gte: 2000}, runtime: {$lt: 30} })
+
+mflix> db.movies.find({ year: { $gte: 2000}, runtime: { $lt: 30 }});
+[
+  {
+    _id: ObjectId("573a13d6f29313caabd9f805"),
+    plot: 'Don Hertzfeldt closes his trilogy as Bill struggles to piece together his shattering psyche.',
+    genres: [ 'Animation', 'Short', 'Drama' ],
+    runtime: 23,
+    metacritic: 82,
+    title: "It's Such a Beautiful Day",
+    countries: [ 'USA' ],
+    fullplot: 'Don Hertzfeldt closes his trilogy as Bill struggles to piece together his shattering psyche.',
+    languages: [ 'English' ],
+    cast: [ 'Don Hertzfeldt' ],
+    directors: [ 'Don Hertzfeldt' ],
+    writers: [ 'Don Hertzfeldt' ],
+    awards: { wins: 15, nominations: 4, text: '15 wins & 4 nominations.' },
+    lastupdated: '2015-08-07 00:51:22.930000000',
+    year: 2011,
+    imdb: { rating: 8.4, votes: 655, id: 2078648 },
+    type: 'movie',
+    tomatoes: {
+      viewer: { rating: 4.5, numReviews: 4, meter: 100 },
+      dvd: ISODate("2012-10-30T00:00:00.000Z"),
+      production: 'Mediapool',
+      lastUpdated: ISODate("2015-09-15T17:24:24.000Z")
+    },
+    num_mflix_comments: 0
+  }
+]
+mflix>
+
+* Indexing and Searching For Movies By Genres
+---------------------------------------------
+5.
+The museum’s event coordinator wants to divide the museum’s exhibit space by genres. Create a multikey index based on the genres field so that the index will be organized in alphabetical 
+order.
+
+
+Hint
+Use the .createIndex() method on the movies collection. Assign the genres field a value of 1 to sort the references in alphabetical order and -1 to sort the references in reverse 
+alphabetical order.
+
+Need another hint?
+Your query should look as follows:
+
+db.movies.createIndex({genres: 1})
+
+mflix> db.movies.createIndex({ genres: 1 });
+genres_1
+
+Your director would like the opening exhibition hall to focus on drama. Using your newly created index, run a query to find all movies that have "Drama" listed as a genre.
+
+
+Hint
+Use .find() on the movies collection to search for movies who have "Drama" listed in their genres array.
+
+Need another hint?
+Your query should look as follows:
+
+db.movies.find({genres: 'Drama'})
+
+mflix> db.movies.find({ genres: "Drama" });
+[
+  {
+    _id: ObjectId("573a139bf29313caabcf2dbc"),
+    plot: 'A bickering couple drive fast through a downpour to catch the last ferry to their island retreat. In a flash, they recognize a crumpled body laying at the side of the road after much ...',
+    genres: [ 'Thriller', 'Drama' ],
+    runtime: 96,
+    rated: 'R',
+    cast: [ 'Alan Rickman', 'Polly Walker', 'Norman Reedus', 'Janet Mecca' ],
+    poster: 'https://m.media-amazon.com/images/M/MV5BMTUyNjY0NTY0NF5BMl5BanBnXkFtZTcwNzM4NjUxMQ@@._V1_SY1000_SX677_AL_.jpg',
+    title: 'Dark Harbor',
+    fullplot: 'A bickering couple drive fast through a downpour to catch the last ferry to their island retreat. In a flash, they recognize a crumpled body laying at the side of the road after much argument they stop, only to find a young boy battered and bruised. An offer of summoning the police firmly rejected, the two help the boy as best they can although it certainly means missing the ferry... and so starts this thriller: a tale of twisted sexual attraction and ulterior motives.',
+    languages: [ 'English' ],
+    released: ISODate("1999-12-31T00:00:00.000Z"),
+    directors: [ 'Adam Coleman Howard' ],
+    writers: [
+      'Adam Coleman Howard',
+      'Gretchen Hayduk-Wroblewski (script development)',
+      'Justin Lazard'
+    ],
+    awards: { wins: 0, nominations: 1, text: '1 nomination.' },
+    lastupdated: '2015-09-02 00:21:39.977000000',
+    year: 1998,
+    imdb: { rating: 6.1, votes: 1765, id: 129023 },
+    countries: [ 'USA' ],
+    type: 'movie',
+    tomatoes: {
+      viewer: { rating: 3.4, numReviews: 2645, meter: 61 },
+      dvd: ISODate("2001-08-21T00:00:00.000Z"),
+      production: 'Artisan Entertainment',
+      lastUpdated: ISODate("2015-06-28T19:31:22.000Z")
+    },
+    num_mflix_comments: 0
+  },
+  {
+    _id: ObjectId("573a13c3f29313caabd6a9dd"),
+    fullplot: 'Suzanne is a well to do married woman and mother in the south of France. Her idle bourgeois lifestyle gets her down and she decides to go back to work as a physiotherapist. Her husband agrees to fix up a consulting room for her in their backyard. When Suzanne and the man hired to do the building meet, the mutual attraction is sudden and violent. Suzanne decides to give up everything and live this all engulfing passion to the fullest.',
+    imdb: { rating: 6.3, votes: 3232, id: 1315962 },
+    year: 2009,
+    plot: 'Suzanne is a well to do married woman and mother in the south of France. Her idle bourgeois lifestyle gets her down and she decides to go back to work as a physiotherapist. Her husband ...',
+    genres: [ 'Drama', 'Romance' ],
+    rated: 'UNRATED',
+    metacritic: 56,
+    title: 'Leaving',
+    lastupdated: '2015-09-12 00:28:42.960000000',
+    languages: [ 'French', 'Catalan', 'English' ],
+    writers: [
+      'Catherine Corsini (scenario)',
+      'Gaèlle Macè (collaborator)',
+      'Antoine Jaccoud (scenario consultant)',
+      'Emmanuelle Bernheim (scenario consultant)'
+    ],
+    type: 'movie',
+    tomatoes: {
+      viewer: { rating: 3.1, numReviews: 13733, meter: 47 },
+      dvd: ISODate("2011-02-22T00:00:00.000Z"),
+      critic: { rating: 6.3, numReviews: 63, meter: 68 },
+      boxOffice: '$0.2M',
+      consensus: 'Laden with melodramatic clichès, Leaving needed a talented star to succeed -- and Kristin Scott Thomas delivers the goods with another superb performance.',
+      rotten: 20,
+      production: 'IFC Films',
+      lastUpdated: ISODate("2015-09-11T17:13:05.000Z"),
+      fresh: 43
+    },
+    poster: 'https://m.media-amazon.com/images/M/MV5BMTQ0MzE0NDU2Ml5BMl5BanBnXkFtZTcwMjk4NDI5Mw@@._V1_SY1000_SX677_AL_.jpg',
+    num_mflix_comments: 1,
+    released: ISODate("2009-08-12T00:00:00.000Z"),
+    awards: { wins: 1, nominations: 3, text: '1 win & 3 nominations.' },
+    countries: [ 'France' ],
+    cast: [
+      'Kristin Scott Thomas',
+      'Sergi Lèpez',
+      'Yvan Attal',
+      'Bernard Blancan'
+    ],
+    directors: [ 'Catherine Corsini' ],
+    runtime: 85
+  },
+  {
+    _id: ObjectId("573a1394f29313caabce0adc"),
+    plot: 'Mail author for translation. Kos Ferenc elgyotorten, betegen erkezik meg a haborubol. Mig odavolt, felesege meghalt, kisfiat sogornoje, a pupos Tera nevelte. A lany Ferencet is elhalmozza ...',
+    genres: [ 'Drama' ],
+    runtime: 101,
+    cast: [ 'Jènos Gèrbe', 'Irèn Psota', 'Margit Bara', 'Jèzsef Bihari' ],
+    num_mflix_comments: 0,
+    title: 'Hèz a sziklèk alatt',
+    fullplot: 'Mail author for translation. Kos Ferenc elgyotorten, betegen erkezik meg a haborubol. Mig odavolt, felesege meghalt, kisfiat sogornoje, a pupos Tera nevelte. A lany Ferencet is elhalmozza szeretetevel, hisz titokban szerelemes a ferfiba. Ferenc azonban hamarosan uj asszonyt hoz a hazhoz, a szep Zsuzsat. Tera ahol csak lehet, bosszantja, gancsolja az asszonyt. Ferenc sokaig csak tetlenul nezi, hogy megy tonkre csaladi boldogsaga...',
+    languages: [ 'Hungarian' ],
+    released: ISODate("1959-01-15T00:00:00.000Z"),
+    directors: [ 'Kèroly Makk', 'Gyèrgy Hintsch' ],
+    writers: [ 'Sèndor Tatay' ],
+    awards: { wins: 1, nominations: 0, text: '1 win.' },
+    lastupdated: '2015-08-28 00:00:06.970000000',
+    year: 1958,
+    imdb: { rating: 7.3, votes: 130, id: 51753 },
+    countries: [ 'Hungary' ],
+    type: 'movie',
+    tomatoes: {
+      viewer: { rating: 3.2, numReviews: 1533, meter: 50 },
+      dvd: ISODate("2001-11-20T00:00:00.000Z"),
+      critic: { rating: 6.3, numReviews: 11, meter: 64 },
+      lastUpdated: ISODate("2015-07-29T19:03:17.000Z"),
+      rotten: 4,
+      production: 'United Artists',
+      fresh: 7
+    }
+  },
+  {
+    _id: ObjectId("573a13d6f29313caabd9f805"),
+    plot: 'Don Hertzfeldt closes his trilogy as Bill struggles to piece together his shattering psyche.',
+    genres: [ 'Animation', 'Short', 'Drama' ],
+    runtime: 23,
+    metacritic: 82,
+    title: "It's Such a Beautiful Day",
+    countries: [ 'USA' ],
+    fullplot: 'Don Hertzfeldt closes his trilogy as Bill struggles to piece together his shattering psyche.',
+    languages: [ 'English' ],
+    cast: [ 'Don Hertzfeldt' ],
+    directors: [ 'Don Hertzfeldt' ],
+    writers: [ 'Don Hertzfeldt' ],
+    awards: { wins: 15, nominations: 4, text: '15 wins & 4 nominations.' },
+    lastupdated: '2015-08-07 00:51:22.930000000',
+    year: 2011,
+    imdb: { rating: 8.4, votes: 655, id: 2078648 },
+    type: 'movie',
+    tomatoes: {
+      viewer: { rating: 4.5, numReviews: 4, meter: 100 },
+      dvd: ISODate("2012-10-30T00:00:00.000Z"),
+      production: 'Mediapool',
+      lastUpdated: ISODate("2015-09-15T17:24:24.000Z")
+    },
+    num_mflix_comments: 0
+  },
+  {
+    _id: ObjectId("573a1399f29313caabcee7ae"),
+    countries: [ 'Germany', 'Lithuania' ],
+    genres: [ 'Drama' ],
+    runtime: 85,
+    cast: [
+      'Daiva Ksivickiene',
+      'Mantvydas Janeliunas',
+      'Viacheslav Amirhanian',
+      'Sharunas Bartas'
+    ],
+    title: 'The Corridor',
+    lastupdated: '2015-07-01 04:50:00.507000000',
+    released: ISODate("1995-10-18T00:00:00.000Z"),
+    directors: [ 'Sharunas Bartas' ],
+    writers: [ 'Sharunas Bartas' ],
+    awards: { wins: 3, nominations: 1, text: '3 wins & 1 nomination.' },
+    year: 1995,
+    imdb: { rating: 7.2, votes: 325, id: 110278 },
+    type: 'movie',
+    tomatoes: {
+      viewer: { rating: 4, numReviews: 60 },
+      lastUpdated: ISODate("2015-08-17T19:16:39.000Z")
+    },
+    num_mflix_comments: 0
+  }
+]
+
+* Pruning Unnecessary Indexes
+-----------------------------
+7.
+Your compound index and your multikey index are working quite nicely but you find that you are relying solely on these two indexes, and your single field index on the year field has 
+become redundant. This unused index should be removed to save as much memory and bandwidth as possible. First, use the correct MongoDB method to figure out the name of the single field 
+index you want to remove.
+
+
+Hint
+Use the .getIndexes() method on the movies collection to see a list of all the indexes for this collection.
+
+Need another hint?
+Your query should look as follows:
+
+mflix> db.movies.getIndexes();
+[
+  { v: 2, key: { _id: 1 }, name: '_id_' },
+  { v: 2, key: { year: 1 }, name: 'year_1' },
+  { v: 2, key: { year: -1 }, name: 'year_-1' },
+  { v: 2, key: { year: -1, runtime: 1 }, name: 'year_-1_runtime_1' },
+  { v: 2, key: { geners: 1 }, name: 'geners_1' },
+  { v: 2, key: { genres: 1 }, name: 'genres_1' }
+]
+
+8.
+Identify the single field index based on the year field and delete it.
+
+
+Hint
+Use the .dropIndex() method on the movies collection passing in the name of the index, "year_-1", as a string.
+
+Need another hint?
+Your query should look as follows:
+
+db.movies.dropIndex('year_-1')
+
+mflix> db.movies.dropIndex('year_-1');
+{ nIndexesWas: 6, ok: 1 }
+
+9.
+It is always a good idea to confirm that your operation was successful. Check the list of indexes again to confirm that the single field index was removed.
+
+
+Hint
+Use the .getIndexes() method on the movies collection to see a list of indexes, and confirm that the index you dropped was successfully removed.
+
+Need another hint?
+Your query should look as follows:
+
+db.movies.getIndexes()
+
+mflix> db.movies.getIndexes();
+[
+  { v: 2, key: { _id: 1 }, name: '_id_' },
+  { v: 2, key: { year: 1 }, name: 'year_1' },
+  { v: 2, key: { year: -1, runtime: 1 }, name: 'year_-1_runtime_1' },
+  { v: 2, key: { geners: 1 }, name: 'geners_1' },
+  { v: 2, key: { genres: 1 }, name: 'genres_1' }
+]
+
+10.
+Congratulations on finishing the project! You were able to apply your knowledge of MongoDB indexes to maximize the efficiency of your movie history queries.
+
+In this project, you:
+
+	. Created new single-field, compound, and multikey indexes using .createIndex().
+
+	. Listed all the indexes of a collection using .getIndexes()
+
+	. Deleted redundant indexes using .dropIndex()
+
+Feel free to continue playing around with the mflix collection to get even more practice.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
