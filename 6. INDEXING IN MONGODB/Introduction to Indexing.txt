@@ -639,6 +639,91 @@ restaurants>
 
 ------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
+* Multikey Index on Single Fields
+---------------------------------
+3 min
+How do MongoDB indexes handle fields whose values are arrays? Conveniently, MongoDB automatically creates what’s known as a multikey index whenever an index on a array field is created. 
+Multikey indexes provide an index key for each element in the indexed array.
+
+Suppose we had a document within the students collection that had a field, sports with an array as its value:
+
+{ 
+  _id: ObjectId(...),
+  last_name: "Tapia",
+  first_name: "Joseph",
+  major: "architecture",
+  birth_year: 1988,
+  graduation_year: 2012 ,
+  sports: ["rowing", "boxing"]
+}
+
+We could create a multikey index on this field in the same way we would create any other single-field index:
+
+db.students.createIndex({ sports : 1 });
+
+This would create an index that references the sports field for every document in the collection. Since sports is an array field, the resulting multikey index would contain individual 
+references to each element in the array. We specified ascending order for our index so the values would be organized in alphabetical order.
+
+Note that this example discusses multikey single field indexes. Next we’ll learn about some important considerations to keep in mind when creating compound multikey indexes.
+
+Let’s spend some time practicing creating and using multikey indexes!
+
+* Instructions
+--------------
+Checkpoint 1 Passed
+1.
+Switch to the restaurants database. Inside the listingsAndReviews collection, create a multikey index on the grades field in ascending order.
+
+
+Hint
+Remember to first run the command use restaurants to access the listingsAndReviews collection.
+
+Make sure to call the .createIndex() method on the listingsAndReviews collection with the relevant fields. Provide 1 as a value to order the field values in ascending order and -1 for descending order.
+
+Need another hint?
+Provide `1` as a value to order the field values in ascending order and `-1` for descending order. Once you put it together, your query should look like this:
+db.listingsAndReviews.createIndex({grades: 1})
+
+mongosh
+-------
+test> use restaurants;
+switched to db restaurants
+restaurants> db.listingsAndReviews.createIndex({ grades: 1 });
+grades_1
+restaurants>
+
+------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
